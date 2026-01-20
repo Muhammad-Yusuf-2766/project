@@ -1,4 +1,4 @@
-import { LogIn, Menu, ShoppingBag, User, X } from 'lucide-react'
+import { LogIn, Menu, User, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -13,44 +13,42 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 	const currentPath = location.pathname
 
 	return (
-		<nav className='bg-white shadow-md sticky top-0 z-50'>
+		<nav className='shadow-md sticky top-0 z-50 bg-card'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='flex justify-between items-center h-16'>
 					<Link to='/' className='flex items-center space-x-2'>
-						<ShoppingBag className='w-8 h-8 text-emerald-600' />
-						<span className='text-2xl font-bold text-gray-900'>
-							Ansor <span className='text-emerald-600'>Market</span>
-						</span>
+						<img
+							src='/public/ansor_logo_180px.png'
+							className='w-12 h-12 text-emerald-600'
+						/>
+
+						<span className='text-primary text-2xl font-bold'>Market</span>
 					</Link>
 
 					<div className='hidden md:flex items-center space-x-8'>
 						<Link
 							to='/'
 							className={`${
-								currentPath === '/' ? 'text-emerald-600' : 'text-gray-700'
-							} hover:text-emerald-600 transition-colors font-medium`}
+								currentPath === '/' ? 'text-primary' : 'text-text'
+							} hover:text-primary transition-colors font-medium`}
 						>
-							Home
+							Asosiy
 						</Link>
 						<Link
 							to='/products'
 							className={`${
-								currentPath === '/products'
-									? 'text-emerald-600'
-									: 'text-gray-700'
-							} hover:text-emerald-600 transition-colors font-medium`}
+								currentPath === '/products' ? 'text-primary' : 'text-text'
+							} hover:text-primary transition-colors font-medium`}
 						>
-							Products
+							Mahsulotlar
 						</Link>
 
 						{isLoggedIn && userRole === 'admin' && (
 							<Link
 								to='/admin'
 								className={`${
-									currentPath === '/admin'
-										? 'text-emerald-600'
-										: 'text-gray-700'
-								} hover:text-emerald-600 transition-colors font-medium`}
+									currentPath === '/admin' ? 'text-primary' : 'text-text'
+								} hover:text-primary transition-colors font-medium`}
 							>
 								Admin Panel
 							</Link>
@@ -60,10 +58,8 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 							<Link
 								to='/dashboard'
 								className={`${
-									currentPath === '/dashboard'
-										? 'text-emerald-600'
-										: 'text-gray-700'
-								} hover:text-emerald-600 transition-colors font-medium`}
+									currentPath === '/dashboard' ? 'text-primary' : 'text-text'
+								} hover:text-primary transition-colors font-medium`}
 							>
 								Dashboard
 							</Link>
@@ -72,7 +68,7 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 
 					<div className='hidden md:flex items-center space-x-4'>
 						{isLoggedIn ? (
-							<button className='flex items-center space-x-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors'>
+							<button className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'>
 								<User className='w-4 h-4' />
 								<span>Profile</span>
 							</button>

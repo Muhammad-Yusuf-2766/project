@@ -9,11 +9,11 @@ import SellerDashboard from './pages/SellerDashboard'
 
 function App() {
 	const [isLoggedIn] = useState(true)
-	const [userRole] = useState<'admin' | 'seller'>('seller')
+	const [userRole] = useState<'admin' | 'seller'>('admin')
 
 	return (
 		<BrowserRouter>
-			<div className='min-h-screen bg-gray-50 flex flex-col'>
+			<div className='min-h-screen bg-background flex flex-col'>
 				<Navbar isLoggedIn={isLoggedIn} userRole={userRole} />
 				<main className='flex-1'>
 					<Routes>

@@ -3,9 +3,12 @@ import { useState } from 'react'
 import ProductCard from '../components/ProductCard'
 import { CategoryType, Product } from '../types'
 
+type SaleFilter = 'all' | 'sale' | 'non-sale'
+
 export default function Products() {
 	const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all')
 	const [searchQuery, setSearchQuery] = useState('')
+	const [saleFilter, setSaleFilter] = useState<SaleFilter>('all')
 
 	const mockProducts: Product[] = [
 		{
@@ -13,6 +16,7 @@ export default function Products() {
 			name: 'Premium Angus Beef',
 			category: 'beef',
 			price: 24.99,
+			originalPrice: 32.99, // On Sale
 			unit: 'kg',
 			description:
 				'High-quality halal Angus beef, perfect for grilling and roasting',
@@ -40,6 +44,7 @@ export default function Products() {
 			name: 'Whole Chicken',
 			category: 'chicken',
 			price: 8.99,
+			originalPrice: 11.99, // On Sale
 			unit: 'piece',
 			description: 'Farm-fresh halal chicken, cleaned and ready to cook',
 			image:
@@ -66,6 +71,7 @@ export default function Products() {
 			name: 'Ground Beef',
 			category: 'beef',
 			price: 18.99,
+			originalPrice: 24.99, // On Sale
 			unit: 'kg',
 			description: 'Lean halal ground beef, perfect for burgers and meatballs',
 			image:
@@ -92,6 +98,7 @@ export default function Products() {
 			name: 'Whole Wheat Bread',
 			category: 'bread',
 			price: 4.99,
+			originalPrice: 6.49, // On Sale
 			unit: 'loaf',
 			description: 'Healthy whole wheat bread, baked fresh daily',
 			image:
@@ -116,11 +123,11 @@ export default function Products() {
 	]
 
 	const categories = [
-		{ id: 'all', name: 'All Products', icon: Package },
-		{ id: 'beef', name: 'Beef', icon: Beef },
-		{ id: 'mutton', name: 'Mutton', icon: Beef },
-		{ id: 'chicken', name: 'Chicken', icon: ChefHat },
-		{ id: 'bread', name: 'Bread', icon: Wheat },
+		{ id: 'all', name: 'Barchasi', icon: Package },
+		{ id: 'beef', name: 'Mol go`shti', icon: Beef },
+		{ id: 'mutton', name: 'Qo`y go`shti', icon: Beef },
+		{ id: 'chicken', name: 'Tovuq go`shti', icon: ChefHat },
+		{ id: 'bread', name: 'Patir va Nonlar', icon: Wheat },
 	]
 
 	const filteredProducts = mockProducts.filter(product => {
@@ -129,44 +136,82 @@ export default function Products() {
 		const matchesSearch =
 			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			product.description.toLowerCase().includes(searchQuery.toLowerCase())
-		return matchesCategory && matchesSearch
+		const matchesSaleFilter =
+			saleFilter === 'all' ||
+			(saleFilter === 'sale' && product.originalPrice !== undefined) ||
+			(saleFilter === 'non-sale' && product.originalPrice === undefined)
+		return matchesCategory && matchesSearch && matchesSaleFilter
 	})
 
 	return (
-		<div className='min-h-screen bg-gray-50'>
-			<div className='bg-gradient-to-r from-emerald-600 to-emerald-500 text-white py-12'>
+		<div className='min-h-screen bg-background overflow-hidden'>
+			<div className='bg-linear-to-r from-secondary to-transparent text-white py-12'>
 				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-					<h1 className='text-4xl font-bold mb-4'>Our Products</h1>
+					<h1 className='text-4xl font-bold mb-4'>Bizning Mahsulotlar</h1>
 					<p className='text-emerald-50 text-lg'>
-						Browse our selection of premium halal products
+						Eng sara halol mahsulotlar — bir joyda
 					</p>
 				</div>
 			</div>
 
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
 				<div className='mb-8'>
-					<div className='relative'>
-						<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5' />
-						<input
-							type='text'
-							placeholder='Search products...'
-							value={searchQuery}
-							onChange={e => setSearchQuery(e.target.value)}
-							className='w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent'
-						/>
+					<div className='flex flex-col sm:flex-row gap-4'>
+						<div className='relative flex-1'>
+							<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5' />
+							<input
+								type='text'
+								placeholder='Mahsulotlarni qidirish...'
+								value={searchQuery}
+								onChange={e => setSearchQuery(e.target.value)}
+								className='w-full pl-12 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-card text-text'
+							/>
+						</div>
+						<div className='flex gap-2 w-full flex-wrap'>
+							<button
+								onClick={() => setSaleFilter('all')}
+								className={`px-5 py-3 rounded-lg font-medium transition-all ${
+									saleFilter === 'all'
+										? 'bg-primary text-white shadow-md'
+										: 'bg-card text-text border border-border hover:bg-light'
+								}`}
+							>
+								Barchasi
+							</button>
+							<button
+								onClick={() => setSaleFilter('sale')}
+								className={`px-5 py-3 rounded-lg font-medium transition-all ${
+									saleFilter === 'sale'
+										? 'bg-primary text-white shadow-md'
+										: 'bg-card text-text border border-border hover:bg-light'
+								}`}
+							>
+								Chegirmada
+							</button>
+							<button
+								onClick={() => setSaleFilter('non-sale')}
+								className={`px-5 py-3 rounded-lg font-medium transition-all ${
+									saleFilter === 'non-sale'
+										? 'bg-primary text-white shadow-md'
+										: 'bg-card text-text border border-border hover:bg-light'
+								}`}
+							>
+								Chegirmasiz
+							</button>
+						</div>
 					</div>
 				</div>
 
 				<div className='flex flex-col lg:flex-row gap-8'>
-					<div className='lg:w-64 flex-shrink-0'>
-						<div className='bg-white rounded-lg shadow-md p-6 sticky top-24'>
+					<div className='lg:w-64 shrink-0'>
+						<div className='bg-card rounded-lg shadow-md p-6 sticky top-24'>
 							<div className='flex items-center mb-4'>
-								<Filter className='w-5 h-5 mr-2 text-emerald-600' />
-								<h2 className='text-lg font-semibold text-gray-900'>
-									Categories
+								<Filter className='w-5 h-5 mr-2 text-primary' />
+								<h2 className='text-lg font-semibold text-text'>
+									Kategoriyalar
 								</h2>
 							</div>
-							<div className='space-y-2'>
+							<div className='space-y-2 text-text'>
 								{categories.map(category => {
 									const Icon = category.icon
 									return (
@@ -177,8 +222,8 @@ export default function Products() {
 											}
 											className={`w-full flex items-center px-4 py-3 rounded-lg transition-all ${
 												selectedCategory === category.id
-													? 'bg-emerald-600 text-white shadow-md'
-													: 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+													? 'bg-primary text-white shadow-md'
+													: 'hover:bg-light'
 											}`}
 										>
 											<Icon className='w-5 h-5 mr-3' />
@@ -192,23 +237,23 @@ export default function Products() {
 
 					<div className='flex-1'>
 						<div className='mb-4 flex items-center justify-between'>
-							<p className='text-gray-600'>
-								Showing{' '}
-								<span className='font-semibold text-gray-900'>
+							<p className='text-text-secondary'>
+								Ko'rsatilmoqda:{' '}
+								<span className='font-semibold text-text'>
 									{filteredProducts.length}
 								</span>{' '}
-								products
+								mahsulot
 							</p>
 						</div>
 
 						{filteredProducts.length === 0 ? (
-							<div className='bg-white rounded-lg shadow-md p-12 text-center'>
-								<Package className='w-16 h-16 text-gray-400 mx-auto mb-4' />
-								<h3 className='text-xl font-semibold text-gray-900 mb-2'>
-									No products found
+							<div className='bg-card rounded-lg shadow-md p-12 text-center'>
+								<Package className='w-16 h-16 text-text-muted mx-auto mb-4' />
+								<h3 className='text-xl font-semibold text-text mb-2'>
+									Mahsulot topilmadi
 								</h3>
-								<p className='text-gray-600'>
-									Try adjusting your search or filters
+								<p className='text-text-secondary'>
+									Qidiruv yoki filtrlarni o'zgartirib ko'ring
 								</p>
 							</div>
 						) : (
