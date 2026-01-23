@@ -2,8 +2,11 @@ import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
-import AdminDashboard from './pages/AdminDashboard'
-import Home from './pages/Home'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import Login from './pages/auth/login'
+import Profile from './pages/auth/profile'
+import Register from './pages/auth/register'
+import Home from './pages/home'
 import Products from './pages/Products'
 import SellerDashboard from './pages/SellerDashboard'
 
@@ -18,6 +21,9 @@ function App() {
 				<main className='flex-1'>
 					<Routes>
 						<Route path='/' element={<Home />} />
+						<Route path='/login' element={<Login />} />
+						<Route path='/register' element={<Register />} />
+						<Route path='/profile' element={<Profile />} />
 						<Route path='/products' element={<Products />} />
 						<Route path='/admin' element={<AdminDashboard />} />
 						<Route path='/dashboard' element={<SellerDashboard />} />

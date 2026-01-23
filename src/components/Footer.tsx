@@ -8,7 +8,7 @@ export default function Footer() {
 					<div className='col-span-1 md:col-span-2'>
 						<div className='flex items-center space-x-2 mb-4'>
 							<img
-								src='/public/ansor_logo_180px.png'
+								src='/ansor_logo_180px.png'
 								className='w-20 h-20 text-primary'
 							/>
 							<span className='text-2xl font-bold text-white'>

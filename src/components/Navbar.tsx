@@ -18,7 +18,7 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 				<div className='flex justify-between items-center h-16'>
 					<Link to='/' className='flex items-center space-x-2'>
 						<img
-							src='/public/ansor_logo_180px.png'
+							src='/ansor_logo_180px.png'
 							className='w-12 h-12 text-emerald-600'
 						/>
 
@@ -68,15 +68,21 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 
 					<div className='hidden md:flex items-center space-x-4'>
 						{isLoggedIn ? (
-							<button className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'>
+							<Link
+								to={'/profile'}
+								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+							>
 								<User className='w-4 h-4' />
 								<span>Profile</span>
-							</button>
+							</Link>
 						) : (
-							<button className='flex items-center space-x-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors'>
+							<Link
+								to={'/login'}
+								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+							>
 								<LogIn className='w-4 h-4' />
-								<span>Sign In</span>
-							</button>
+								<span>Login</span>
+							</Link>
 						)}
 					</div>
 
