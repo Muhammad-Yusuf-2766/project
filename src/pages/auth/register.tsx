@@ -45,7 +45,7 @@ export default function Register() {
 				}}
 			>
 				<div className='absolute inset-0 flex flex-col items-center justify-center p-12 text-white'>
-					<ShoppingBag className='w-16 h-16 mb-6' />
+					<img src='/ansor_logo_180px.png' className='' />
 					<h2 className='text-4xl font-bold mb-4 text-center'>Ansor Market</h2>
 					<p className='text-xl text-center text-white/90 max-w-md'>
 						Bizning jamoamizga qo'shiling va eng yaxshi halol mahsulotlardan

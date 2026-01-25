@@ -1,4 +1,5 @@
 import {
+	AppleIcon,
 	Award,
 	Beef,
 	ChefHat,
@@ -413,5 +414,6 @@ export const categoriesPage = [
 	{ id: 'mutton', name: 'Qo`y go`shti', icon: Beef },
 	{ id: 'chicken', name: 'Tovuq go`shti', icon: ChefHat },
 	{ id: 'bread', name: 'Patir va Nonlar', icon: Wheat },
+	{ id: 'dry fruits', name: 'Quruq mevalar', icon: AppleIcon },
 ]
 // ===== 	Product-pages ====== //

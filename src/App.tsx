@@ -6,8 +6,9 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import Login from './pages/auth/login'
 import Profile from './pages/auth/profile'
 import Register from './pages/auth/register'
+import Cart from './pages/cart/index'
 import Home from './pages/home'
-import Products from './pages/Products'
+import Products from './pages/products/Products'
 import SellerDashboard from './pages/SellerDashboard'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
 						<Route path='/register' element={<Register />} />
 						<Route path='/profile' element={<Profile />} />
 						<Route path='/products' element={<Products />} />
+						<Route path='/cart' element={<Cart />} />
 						<Route path='/admin' element={<AdminDashboard />} />
 						<Route path='/dashboard' element={<SellerDashboard />} />
 					</Routes>
