@@ -1,6 +1,6 @@
 export interface Product {
-	id: string
-	name: string
+	productId: string
+	title: string
 	category: CategoryType
 	price: number
 	originalPrice?: number
@@ -8,6 +8,7 @@ export interface Product {
 	description: string
 	image: string
 	stock: number
+	rating?: number
 	sellerId?: string
 	createdAt?: string
 }

@@ -6,79 +6,32 @@ import {
 	Trash2,
 	Truck,
 } from 'lucide-react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-
-interface CartItem {
-	id: number
-	name: string
-	price: number
-	quantity: number
-	image: string
-	seller: string
-	unit: string
-}
-
-const initialCartItems: CartItem[] = [
-	{
-		id: 1,
-		name: 'Premium Beef Steak',
-		price: 89000,
-		quantity: 2,
-		image:
-			'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=400',
-		seller: 'Halal Farms',
-		unit: 'kg',
-	},
-	{
-		id: 2,
-		name: 'Fresh Lamb Chops',
-		price: 75000,
-		quantity: 1,
-		image:
-			'https://images.pexels.com/photos/618775/pexels-photo-618775.jpeg?auto=compress&cs=tinysrgb&w=400',
-		seller: 'Mountain Meats',
-		unit: 'kg',
-	},
-	{
-		id: 3,
-		name: 'Artisan Sourdough Bread',
-		price: 18000,
-		quantity: 3,
-		image:
-			'https://images.pexels.com/photos/1510684/pexels-photo-1510684.jpeg?auto=compress&cs=tinysrgb&w=400',
-		seller: 'Baker House',
-		unit: 'dona',
-	},
-]
-
-const formatPrice = (price: number) => {
-	return new Intl.NumberFormat('uz-UZ').format(price) + " so'm"
-}
+import toast from 'react-hot-toast'
+import { Link, useNavigate } from 'react-router-dom'
+import { useCart } from '../../context/CartContext'
+import { formatPrice } from '../../lib/helpers'
 
 export default function Cart() {
-	const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems)
+	const { items, remove, updateQty } = useCart()
+	const navigate = useNavigate()
+	const isLoggedIn = false
 
-	const updateQuantity = (id: number, change: number) => {
-		setCartItems(items =>
-			items.map(item =>
-				item.id === id
-					? { ...item, quantity: Math.max(1, item.quantity + change) }
-					: item,
-			),
-		)
-	}
+	const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
 
-	const removeItem = (id: number) => {
-		setCartItems(items => items.filter(item => item.id !== id))
-	}
-
-	const subtotal = cartItems.reduce(
-		(sum, item) => sum + item.price * item.quantity,
-		0,
-	)
-	const shippingCost = subtotal > 200000 ? 0 : 15000
+	const shippingCost = subtotal > 70000 ? 0 : 5000
 	const total = subtotal + shippingCost
+
+	const checkout = async () => {
+		if (!isLoggedIn) {
+			toast.error('Sotib olish uchun avval login qiling')
+			return navigate('/login', { state: { redirectTo: '/cart' } })
+		}
+
+		// order create...
+		// await api.createOrder(items)
+
+		// clear() // ✅ localStorage ham avtomatik bo‘shab qoladi (effect yozadi)
+	}
 
 	return (
 		<div className='min-h-screen py-8'>
@@ -92,75 +45,80 @@ export default function Cart() {
 						<ArrowLeft className='w-5 h-5 text-text' />
 					</Link>
 					<div>
-						<h1 className='text-3xl font-bold text-text'>Savatcha</h1>
-						<p className='text-text-muted'>{cartItems.length} ta mahsulot</p>
+						<h1 className='md:text-3xl text-lg font-bold text-text'>
+							Savatcha
+						</h1>
+						<p className='text-text-muted'>{items.length} ta mahsulot</p>
 					</div>
 				</div>
 
-				{cartItems.length > 0 ? (
-					<div className='grid lg:grid-cols-3 gap-8'>
+				{items.length > 0 ? (
+					<div className='grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8'>
 						{/* Cart Items */}
-						<div className='lg:col-span-2 space-y-4'>
-							{cartItems.map(item => (
+						<div className='lg:col-span-2 space-y-3 sm:space-y-4'>
+							{items.map(item => (
 								<div
-									key={item.id}
-									className='bg-card rounded-xl shadow-sm p-4 sm:p-6'
+									key={item.productId}
+									className='bg-card rounded-lg sm:rounded-xl shadow-sm p-3 sm:p-4 md:p-6'
 								>
-									<div className='flex gap-4'>
+									<div className='flex gap-3 sm:gap-4'>
 										{/* Product Image */}
 										<div className='shrink-0'>
 											<img
 												src={item.image || '/placeholder.svg'}
-												alt={item.name}
-												className='w-24 h-24 sm:w-32 sm:h-32 rounded-xl object-cover'
+												alt={item.title}
+												className='w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-lg sm:rounded-xl object-cover'
 											/>
 										</div>
 
 										{/* Product Details */}
 										<div className='flex-1 min-w-0'>
-											<div className='flex justify-between items-start'>
-												<div>
-													<p className='text-text-muted text-sm'>
-														{item.seller}
-													</p>
-													<h3 className='text-text font-semibold text-lg mb-1'>
-														{item.name}
+											<div className='flex justify-between items-start gap-2'>
+												<div className='min-w-0'>
+													<h3 className='text-text font-semibold text-sm sm:text-base md:text-lg mb-0.5 sm:mb-1 line-clamp-1'>
+														{item.title}
 													</h3>
-													<p className='text-primary font-bold'>
-														{formatPrice(item.price)} / {item.unit}
+													<p className='text-primary font-bold text-sm sm:text-base'>
+														{formatPrice(item.price)} / {item.qty}
 													</p>
 												</div>
 												<button
-													onClick={() => removeItem(item.id)}
-													className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors'
+													onClick={() => remove(item.productId)}
+													className='p-1.5 sm:p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0'
 												>
-													<Trash2 className='w-5 h-5' />
+													<Trash2 className='w-4 h-4 sm:w-5 sm:h-5' />
 												</button>
 											</div>
 
 											{/* Quantity Controls & Line Total */}
-											<div className='flex items-center justify-between mt-4'>
-												<div className='flex items-center gap-3'>
+											<div className='flex items-center justify-between mt-2 sm:mt-3 md:mt-4'>
+												<div className='flex items-center gap-2 sm:gap-3'>
 													<button
-														onClick={() => updateQuantity(item.id, -1)}
-														className='w-9 h-9 flex items-center justify-center bg-light rounded-lg hover:bg-border transition-colors'
+														onClick={() =>
+															updateQty(item.productId, item.qty - 1)
+														}
+														className='w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center bg-light rounded-md sm:rounded-lg hover:bg-border transition-colors'
 													>
-														<Minus className='w-4 h-4 text-text' />
+														<Minus className='w-3 h-3 sm:w-4 sm:h-4 text-text' />
 													</button>
-													<span className='w-8 text-center font-semibold text-text'>
-														{item.quantity}
+													<span className='w-6 sm:w-8 text-center font-semibold text-text text-sm sm:text-base'>
+														{item.qty}
 													</span>
 													<button
-														onClick={() => updateQuantity(item.id, 1)}
-														className='w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+														onClick={() =>
+															updateQty(item.productId, item.qty + 1)
+														}
+														className='w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center bg-primary text-white rounded-md sm:rounded-lg hover:bg-primary-hover transition-colors'
 													>
-														<Plus className='w-4 h-4' />
+														<Plus className='w-3 h-3 sm:w-4 sm:h-4' />
 													</button>
 												</div>
 												<div className='text-right'>
-													<p className='text-text-muted text-sm'>Jami</p>
-													<p className='text-text font-bold text-lg'>
-														{formatPrice(item.price * item.quantity)}
+													<p className='text-text-muted text-[10px] sm:text-xs md:text-sm'>
+														Jami
+													</p>
+													<p className='text-text font-bold text-sm sm:text-base md:text-lg'>
+														{formatPrice(item.price * item.qty)}
 													</p>
 												</div>
 											</div>
@@ -172,26 +130,26 @@ export default function Cart() {
 							{/* Continue Shopping */}
 							<Link
 								to='/products'
-								className='inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all mt-4'
+								className='inline-flex items-center gap-2 text-primary font-semibold text-sm sm:text-base hover:gap-3 transition-all mt-2 sm:mt-4'
 							>
-								<ArrowLeft className='w-5 h-5' />
+								<ArrowLeft className='w-4 h-4 sm:w-5 sm:h-5' />
 								Xarid qilishni davom ettirish
 							</Link>
 						</div>
 
 						{/* Order Summary */}
 						<div className='lg:col-span-1'>
-							<div className='bg-card rounded-xl shadow-sm p-6 sticky top-24'>
-								<h2 className='text-xl font-bold text-text mb-6'>
+							<div className='bg-card rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6 sticky top-20 sm:top-24'>
+								<h2 className='text-lg sm:text-xl font-bold text-text mb-4 sm:mb-6'>
 									Buyurtma xulosasi
 								</h2>
 
-								<div className='space-y-4 mb-6'>
-									<div className='flex justify-between text-text'>
-										<span>Mahsulotlar ({cartItems.length})</span>
+								<div className='space-y-3 sm:space-y-4 mb-4 sm:mb-6'>
+									<div className='flex justify-between text-text text-sm sm:text-base'>
+										<span>Mahsulotlar ({items.length})</span>
 										<span className='font-medium'>{formatPrice(subtotal)}</span>
 									</div>
-									<div className='flex justify-between text-text'>
+									<div className='flex justify-between text-text text-sm sm:text-base'>
 										<span>Yetkazib berish</span>
 										<span className='font-medium'>
 											{shippingCost === 0 ? (
@@ -202,46 +160,51 @@ export default function Cart() {
 										</span>
 									</div>
 									{shippingCost > 0 && (
-										<div className='flex items-start gap-2 p-3 bg-primary/10 rounded-lg'>
-											<Truck className='w-5 h-5 text-primary flex-shrink-0 mt-0.5' />
-											<p className='text-sm text-text'>
-												{formatPrice(200000 - subtotal)} dan ko'proq xarid
-												qiling va bepul yetkazib berishdan foydalaning!
+										<div className='flex items-start gap-2 p-2 sm:p-3 bg-primary/10 rounded-lg'>
+											<Truck className='w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0 mt-0.5' />
+											<p className='text-xs sm:text-sm text-text'>
+												{formatPrice(70000 - subtotal)} dan ko'proq xarid qiling
+												va bepul yetkazib berishdan foydalaning!
 											</p>
 										</div>
 									)}
-									<div className='border-t border-border pt-4'>
+									<div className='border-t border-border pt-3 sm:pt-4'>
 										<div className='flex justify-between text-text'>
-											<span className='text-lg font-bold'>Jami</span>
-											<span className='text-xl font-bold text-primary'>
+											<span className='text-base sm:text-lg font-bold'>
+												Jami
+											</span>
+											<span className='text-lg sm:text-xl font-bold text-primary'>
 												{formatPrice(total)}
 											</span>
 										</div>
 									</div>
 								</div>
 
-								<button className='w-full px-6 py-4 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition-colors shadow-lg hover:shadow-xl'>
+								<button
+									onClick={checkout}
+									className='w-full px-4 sm:px-6 py-3 sm:py-4 bg-primary text-white rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base hover:bg-primary-hover transition-colors shadow-lg hover:shadow-xl'
+								>
 									Buyurtma berish
 								</button>
 
 								{/* Payment Methods */}
-								<div className='mt-6 pt-6 border-t border-border'>
-									<p className='text-text-muted text-sm text-center mb-3'>
+								<div className='mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border'>
+									<p className='text-text-muted text-xs sm:text-sm text-center mb-2 sm:mb-3'>
 										Qabul qilinadigan to'lov usullari
 									</p>
-									<div className='flex justify-center gap-3'>
-										<div className='px-3 py-2 bg-light rounded-lg'>
-											<span className='text-sm font-medium text-text'>
+									<div className='flex justify-center gap-2 sm:gap-3'>
+										<div className='px-2 sm:px-3 py-1.5 sm:py-2 bg-light rounded-md sm:rounded-lg'>
+											<span className='text-xs sm:text-sm font-medium text-text'>
 												Payme
 											</span>
 										</div>
-										<div className='px-3 py-2 bg-light rounded-lg'>
-											<span className='text-sm font-medium text-text'>
+										<div className='px-2 sm:px-3 py-1.5 sm:py-2 bg-light rounded-md sm:rounded-lg'>
+											<span className='text-xs sm:text-sm font-medium text-text'>
 												Click
 											</span>
 										</div>
-										<div className='px-3 py-2 bg-light rounded-lg'>
-											<span className='text-sm font-medium text-text'>
+										<div className='px-2 sm:px-3 py-1.5 sm:py-2 bg-light rounded-md sm:rounded-lg'>
+											<span className='text-xs sm:text-sm font-medium text-text'>
 												Naqd
 											</span>
 										</div>

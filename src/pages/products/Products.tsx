@@ -1,5 +1,6 @@
 import { Filter, Package, Search } from 'lucide-react'
 import { useState } from 'react'
+import Pagination from '../../components/Pagination'
 import ProductCard from '../../components/ProductCard'
 import { categoriesPage, mockProductsPage } from '../../constants'
 import { FilterCategoryType } from '../../types'
@@ -16,7 +17,7 @@ export default function Products() {
 		const matchesCategory =
 			selectedCategory === 'all' || product.category === selectedCategory
 		const matchesSearch =
-			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			product.description.toLowerCase().includes(searchQuery.toLowerCase())
 		const matchesSaleFilter =
 			saleFilter === 'all' ||
@@ -24,6 +25,16 @@ export default function Products() {
 			(saleFilter === 'new' && product.createdAt)
 		return matchesCategory && matchesSearch && matchesSaleFilter
 	})
+
+	// ===== Pagination testing ===== //
+	const [currentPage, setCurrentPage] = useState(1)
+	const totalPages = 10
+	const itemsPerPage = 2
+
+	// Calculate which products to show
+	const startIndex = (currentPage - 1) * itemsPerPage
+	const endIndex = startIndex + itemsPerPage
+	const currentProducts = filteredProducts.slice(startIndex, endIndex)
 
 	return (
 		<div className='min-h-screen overflow-hidden'>
@@ -49,14 +60,14 @@ export default function Products() {
 								placeholder='Mahsulotlarni qidirish...'
 								value={searchQuery}
 								onChange={e => setSearchQuery(e.target.value)}
-								className='w-full pl-12 pr-4 py-3 border border-border rounded-lg focus:ring-1 focus:ring-secondary focus:outline-none bg-card text-text'
+								className='w-full pl-12 pr-4 md:py-3 py-2 border border-border rounded-lg focus:ring-1 focus:ring-secondary focus:outline-none bg-card text-text'
 							/>
 						</div>
 
 						<div className='w-full grid grid-cols-4 gap-2'>
 							<button
 								onClick={() => setSaleFilter('all')}
-								className={`w-full px-5 py-3 rounded-lg transition-all text-base ${
+								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all text-base ${
 									saleFilter === 'all'
 										? 'bg-primary text-white shadow-md'
 										: 'bg-card text-text border border-border hover:bg-light'
@@ -67,18 +78,18 @@ export default function Products() {
 
 							<button
 								onClick={() => setSaleFilter('sale')}
-								className={`w-full px-5 py-3 rounded-lg transition-all ${
+								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all ${
 									saleFilter === 'sale'
 										? 'bg-primary text-white shadow-md'
 										: 'bg-card text-text border border-border hover:bg-light'
 								}`}
 							>
-								Chegirmada
+								Sale
 							</button>
 
 							<button
 								onClick={() => setSaleFilter('new')}
-								className={`w-full px-5 py-3 rounded-lg transition-all ${
+								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all ${
 									saleFilter === 'new'
 										? 'bg-primary text-white shadow-md'
 										: 'bg-card text-text border border-border hover:bg-light'
@@ -89,7 +100,7 @@ export default function Products() {
 
 							<button
 								onClick={() => setSaleFilter('top')}
-								className={`w-full px-5 py-3 rounded-lg transition-all ${
+								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all ${
 									saleFilter === 'top'
 										? 'bg-primary text-white shadow-md'
 										: 'bg-card text-text border border-border hover:bg-light'
@@ -104,7 +115,7 @@ export default function Products() {
 				{/* Category & product render section */}
 				<div className='flex flex-col lg:flex-row gap-8'>
 					<div className='lg:w-64 shrink-0'>
-						<div className='bg-card rounded-lg shadow-md p-6 sticky top-24'>
+						<div className='bg-card rounded-lg shadow-md md:p-6 p-3 sticky top-24'>
 							<div className='flex items-center mb-4'>
 								<Filter className='w-5 h-5 mr-2 text-primary' />
 								<h2 className='text-lg font-semibold text-text'>
@@ -115,7 +126,7 @@ export default function Products() {
 							{/* md dan kichik: dropdown menu (button + panel) */}
 							<div className='md:hidden'>
 								<details className='group'>
-									<summary className='list-none flex items-center justify-between w-full px-4 py-3 rounded-lg border-border bg-primary text-light cursor-pointer'>
+									<summary className='list-none flex items-center justify-between w-full px-4 py-2 rounded-lg border-border bg-primary text-light cursor-pointer'>
 										<span className='font-medium'>
 											{categoriesPage.find(c => c.id === selectedCategory)
 												?.name ?? 'Barchasi'}
@@ -152,7 +163,7 @@ export default function Products() {
 														) as HTMLDetailsElement | null
 														if (details) details.open = false
 													}}
-													className={`w-full flex items-center px-4 py-3 rounded-lg transition-all ${
+													className={`w-full flex items-center px-4 py-2 rounded-lg transition-all ${
 														selectedCategory === category.id
 															? 'bg-primary text-white shadow-md'
 															: 'hover:bg-light border border-transparent'
@@ -203,7 +214,7 @@ export default function Products() {
 							</p>
 						</div>
 
-						{filteredProducts.length === 0 ? (
+						{currentProducts.length === 0 ? (
 							<div className='bg-card rounded-lg shadow-md p-12 text-center'>
 								<Package className='w-16 h-16 text-text-muted mx-auto mb-4' />
 								<h3 className='text-xl font-semibold text-text mb-2'>
@@ -214,12 +225,21 @@ export default function Products() {
 								</p>
 							</div>
 						) : (
-							<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+							<div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2'>
 								{filteredProducts.map(product => (
-									<ProductCard key={product.id} product={product} />
+									<ProductCard key={product.productId} product={product} />
 								))}
 							</div>
 						)}
+
+						{/* Pagination */}
+						<div className='mt-8 sm:mt-12'>
+							<Pagination
+								currentPage={currentPage}
+								totalPages={totalPages}
+								onPageChange={setCurrentPage}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>

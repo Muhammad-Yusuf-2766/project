@@ -1,10 +1,7 @@
 import { Clock, Star, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { recentProducts } from '../../constants'
-
-const formatPrice = (price: number) => {
-	return new Intl.NumberFormat('uz-UZ').format(price) + " so'm"
-}
+import { formatPrice } from '../../lib/helpers'
 
 export default function RecentProductsSection() {
 	return (

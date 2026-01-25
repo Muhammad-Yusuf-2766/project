@@ -1,6 +1,7 @@
-import { LogIn, Menu, User, X } from 'lucide-react'
+import { LogIn, Menu, ShoppingCart, User, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
 
 interface NavbarProps {
 	isLoggedIn: boolean
@@ -11,6 +12,7 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const location = useLocation()
 	const currentPath = location.pathname
+	const { itemsCount } = useCart()
 
 	return (
 		<nav className='shadow-md sticky top-0 z-50 bg-card'>
@@ -66,15 +68,27 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 						)}
 					</div>
 
-					<div className='hidden md:flex items-center space-x-4'>
+					<div className='hidden md:flex items-center space-x-6'>
+						<Link
+							to={'/cart'}
+							className='flex items-center space-x-2 px-4 py-2 bg-card text-primary rounded-lg hover:bg-light transition-colors relative border'
+						>
+							<ShoppingCart className='w-4 h-4' />
+							<div className='w-6 h-6 flex items-center justify-center rounded-full p-1 bg-primary text-white absolute -top-2 -right-4 border-2 border-card'>
+								<span>{itemsCount}</span>
+							</div>
+							<span>Savat</span>
+						</Link>
 						{isLoggedIn ? (
-							<Link
-								to={'/profile'}
-								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
-							>
-								<User className='w-4 h-4' />
-								<span>Profile</span>
-							</Link>
+							<>
+								<Link
+									to={'/profile'}
+									className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+								>
+									<User className='w-4 h-4' />
+									<span>Profile</span>
+								</Link>
+							</>
 						) : (
 							<Link
 								to={'/login'}
@@ -86,16 +100,29 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 						)}
 					</div>
 
-					<button
-						className='md:hidden'
-						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-					>
-						{mobileMenuOpen ? (
-							<X className='w-6 h-6 text-gray-700' />
-						) : (
-							<Menu className='w-6 h-6 text-gray-700' />
-						)}
-					</button>
+					{/* ===  */}
+					<div className='md:hidden flex space-x-5'>
+						<Link
+							to={'/cart'}
+							className='flex items-center space-x-2 px-4 py-2 bg-card text-primary rounded-lg hover:bg-light transition-colors relative border'
+						>
+							<ShoppingCart className='w-4 h-4' />
+							<div className='w-6 h-6 flex items-center justify-center rounded-full p-1 bg-primary text-white absolute -top-2 -right-4 border-2 border-card'>
+								<span>{itemsCount}</span>
+							</div>
+							<span>Savat</span>
+						</Link>
+						<button
+							className=''
+							onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+						>
+							{mobileMenuOpen ? (
+								<X className='w-6 h-6 text-gray-700' />
+							) : (
+								<Menu className='w-6 h-6 text-gray-700' />
+							)}
+						</button>
+					</div>
 				</div>
 
 				{mobileMenuOpen && (

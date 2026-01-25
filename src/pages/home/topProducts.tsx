@@ -9,13 +9,12 @@ import {
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { topProducts } from '../../constants'
-
-const formatPrice = (price: number) => {
-	return new Intl.NumberFormat('uz-UZ').format(price) + " so'm"
-}
+import { useCart } from '../../context/CartContext'
+import { formatPrice } from '../../lib/helpers'
 
 export default function TopProductsSection() {
 	const carouselRef = useRef<HTMLDivElement>(null)
+	const { add } = useCart()
 
 	const scroll = (direction: 'left' | 'right') => {
 		if (carouselRef.current) {
@@ -73,13 +72,13 @@ export default function TopProductsSection() {
 			>
 				{topProducts.map(product => (
 					<div
-						key={product.id}
+						key={product.productId}
 						className='group flex-shrink-0 w-72 bg-card rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 snap-start'
 					>
 						<div className='relative h-52 overflow-hidden'>
 							<img
 								src={product.image || '/placeholder.svg'}
-								alt={product.name}
+								alt={product.title}
 								className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
 							/>
 							<div className='absolute top-3 left-3'>
@@ -104,7 +103,7 @@ export default function TopProductsSection() {
 						<div className='p-5'>
 							<p className='text-text-muted text-sm mb-1'>{product.seller}</p>
 							<h3 className='text-text font-semibold text-lg mb-2 line-clamp-1'>
-								{product.name}
+								{product.title}
 							</h3>
 							<div className='flex items-center gap-1 mb-3'>
 								<Star className='w-4 h-4 fill-secondary text-secondary' />
@@ -124,7 +123,10 @@ export default function TopProductsSection() {
 										</span>
 									)}
 								</div>
-								<button className='p-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'>
+								<button
+									onClick={() => add(product, 1)}
+									className='p-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+								>
 									<ShoppingCart className='w-5 h-5' />
 								</button>
 							</div>

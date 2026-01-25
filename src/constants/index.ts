@@ -66,8 +66,8 @@ export const features = [
 
 export const topProducts = [
 	{
-		id: 1,
-		name: 'Premium Beef Steak',
+		productId: '1',
+		title: 'Premium Beef Steak',
 		price: 89000,
 		originalPrice: 110000,
 		image:
@@ -78,8 +78,8 @@ export const topProducts = [
 		badge: 'Best Seller',
 	},
 	{
-		id: 2,
-		name: 'Fresh Lamb Chops',
+		productId: '2',
+		title: 'Fresh Lamb Chops',
 		price: 75000,
 		originalPrice: 95000,
 		image:
@@ -90,8 +90,8 @@ export const topProducts = [
 		badge: 'Top Rated',
 	},
 	{
-		id: 3,
-		name: 'Organic Chicken Breast',
+		productId: '3',
+		title: 'Organic Chicken Breast',
 		price: 45000,
 		originalPrice: 55000,
 		image:
@@ -102,8 +102,8 @@ export const topProducts = [
 		badge: 'Organic',
 	},
 	{
-		id: 4,
-		name: 'Artisan Sourdough Bread',
+		productId: '4',
+		title: 'Artisan Sourdough Bread',
 		price: 18000,
 		originalPrice: 22000,
 		image:
@@ -114,8 +114,8 @@ export const topProducts = [
 		badge: 'Fresh Daily',
 	},
 	{
-		id: 1,
-		name: 'Premium Beef Steak',
+		productId: '1',
+		title: 'Premium Beef Steak',
 		price: 89000,
 		originalPrice: 110000,
 		image:
@@ -126,8 +126,8 @@ export const topProducts = [
 		badge: 'Best Seller',
 	},
 	{
-		id: 2,
-		name: 'Fresh Lamb Chops',
+		productId: '2',
+		title: 'Fresh Lamb Chops',
 		price: 75000,
 		originalPrice: 95000,
 		image:
@@ -138,8 +138,8 @@ export const topProducts = [
 		badge: 'Top Rated',
 	},
 	{
-		id: 3,
-		name: 'Organic Chicken Breast',
+		productId: '3',
+		title: 'Organic Chicken Breast',
 		price: 45000,
 		originalPrice: 55000,
 		image:
@@ -150,8 +150,8 @@ export const topProducts = [
 		badge: 'Organic',
 	},
 	{
-		id: 4,
-		name: 'Artisan Sourdough Bread',
+		productId: '4',
+		title: 'Artisan Sourdough Bread',
 		price: 18000,
 		originalPrice: 22000,
 		image:
@@ -166,7 +166,7 @@ export const topProducts = [
 export const recentProducts = [
 	{
 		id: 5,
-		name: 'Marinated Kebab Mix',
+		title: 'Marinated Kebab Mix',
 		price: 65000,
 		image:
 			'https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=400',
@@ -230,10 +230,10 @@ export const recentProducts = [
 // ===== 	Admin-pages ====== //
 export const mockProducts: Product[] = [
 	{
-		id: '1',
-		name: 'Premium Angus Beef',
+		productId: '1',
+		title: 'Premium Angus Beef',
 		category: 'beef',
-		price: 24.99,
+		price: 15000,
 		unit: 'kg',
 		description: 'High-quality halal Angus beef',
 		image:
@@ -243,10 +243,10 @@ export const mockProducts: Product[] = [
 		createdAt: '2024-01-01',
 	},
 	{
-		id: '2',
-		name: 'Fresh Lamb Chops',
+		productId: '2',
+		title: 'Fresh Lamb Chops',
 		category: 'mutton',
-		price: 28.99,
+		price: 16500,
 		unit: 'kg',
 		description: 'Tender halal lamb chops',
 		image:
@@ -298,11 +298,11 @@ export const initialFormData: ProductFormData = {
 // ===== 	Product-pages ====== //
 export const mockProductsPage: Product[] = [
 	{
-		id: '1',
-		name: 'Premium Angus Beef',
+		productId: '1',
+		title: 'Premium Angus Beef',
 		category: 'beef',
-		price: 24.99,
-		originalPrice: 32.99, // On Sale
+		price: 14000,
+		originalPrice: 18000, // On Sale
 		unit: 'kg',
 		description:
 			'High-quality halal Angus beef, perfect for grilling and roasting',
@@ -313,10 +313,10 @@ export const mockProductsPage: Product[] = [
 		createdAt: '2024-01-01',
 	},
 	{
-		id: '2',
-		name: 'Fresh Lamb Chops',
+		productId: '2',
+		title: 'Fresh Lamb Chops',
 		category: 'mutton',
-		price: 28.99,
+		price: 15700,
 		unit: 'kg',
 		description: 'Tender halal lamb chops, ideal for special occasions',
 		image:
@@ -326,11 +326,11 @@ export const mockProductsPage: Product[] = [
 		createdAt: '2024-01-02',
 	},
 	{
-		id: '3',
-		name: 'Whole Chicken',
+		productId: '3',
+		title: 'Whole Chicken',
 		category: 'chicken',
-		price: 8.99,
-		originalPrice: 11.99, // On Sale
+		price: 12000,
+		originalPrice: 14000, // On Sale
 		unit: 'piece',
 		description: 'Farm-fresh halal chicken, cleaned and ready to cook',
 		image:
@@ -340,10 +340,10 @@ export const mockProductsPage: Product[] = [
 		createdAt: '2024-01-03',
 	},
 	{
-		id: '4',
-		name: 'Artisan Sourdough Bread',
+		productId: '4',
+		title: 'Artisan Sourdough Bread',
 		category: 'bread',
-		price: 5.99,
+		price: 3000,
 		unit: 'loaf',
 		description: 'Freshly baked sourdough with a crispy crust',
 		image:
@@ -353,11 +353,11 @@ export const mockProductsPage: Product[] = [
 		createdAt: '2024-01-04',
 	},
 	{
-		id: '5',
-		name: 'Ground Beef',
+		productId: '5',
+		title: 'Ground Beef',
 		category: 'beef',
-		price: 18.99,
-		originalPrice: 24.99, // On Sale
+		price: 16000,
+		originalPrice: 18000, // On Sale
 		unit: 'kg',
 		description: 'Lean halal ground beef, perfect for burgers and meatballs',
 		image:
@@ -367,10 +367,10 @@ export const mockProductsPage: Product[] = [
 		createdAt: '2024-01-05',
 	},
 	{
-		id: '6',
-		name: 'Chicken Breast',
+		productId: '6',
+		title: 'Chicken Breast',
 		category: 'chicken',
-		price: 12.99,
+		price: 13500,
 		unit: 'kg',
 		description: 'Boneless halal chicken breast, high in protein',
 		image:
@@ -380,11 +380,11 @@ export const mockProductsPage: Product[] = [
 		createdAt: '2024-01-06',
 	},
 	{
-		id: '7',
-		name: 'Whole Wheat Bread',
+		productId: '7',
+		title: 'Whole Wheat Bread',
 		category: 'bread',
-		price: 4.99,
-		originalPrice: 6.49, // On Sale
+		price: 4000,
+		originalPrice: 5000, // On Sale
 		unit: 'loaf',
 		description: 'Healthy whole wheat bread, baked fresh daily',
 		image:
@@ -394,10 +394,10 @@ export const mockProductsPage: Product[] = [
 		createdAt: '2024-01-07',
 	},
 	{
-		id: '8',
-		name: 'Leg of Lamb',
+		productId: '8',
+		title: 'Leg of Lamb',
 		category: 'mutton',
-		price: 32.99,
+		price: 14000,
 		unit: 'kg',
 		description: 'Premium halal leg of lamb, perfect for roasting',
 		image:
