@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { initialFormData, mockProducts } from '../../constants'
-import { Product, ProductFormData } from '../../types'
-import AddProductForm from './_components/AddProductForm'
+import { useEffect, useState } from 'react'
+import { mockProducts } from '../../constants'
+import { getCategories } from '../../service/adminApi'
+import { Product } from '../../types'
+import AddProductForm, { ICategory } from './_components/AddProductForm'
 import AdminHeader from './_components/AdminHeader'
 import AdminTabs, { AdminTabType } from './_components/AdminTabs'
 import DeleteProductModal from './_components/DeleteProductModel'
@@ -12,7 +13,7 @@ import ProductsTable from './_components/ProductsTable'
 export default function AdminDashboard() {
 	const [activeTab, setActiveTab] = useState<AdminTabType>('overview')
 	const [products, setProducts] = useState<Product[]>(mockProducts)
-	const [formData, setFormData] = useState<ProductFormData>(initialFormData)
+	const [categories, setCategories] = useState<ICategory[]>([])
 
 	// Delete modal state
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -22,17 +23,6 @@ export default function AdminDashboard() {
 	const [showEditModal, setShowEditModal] = useState(false)
 	const [productToEdit, setProductToEdit] = useState<Product | null>(null)
 
-	const handleAddSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-		const newProduct: Product = {
-			...formData,
-			id: Date.now().toString(),
-		}
-		setProducts([...products, newProduct])
-		setFormData(initialFormData)
-		setActiveTab('products')
-	}
-
 	const handleDelete = (id: string) => {
 		setProductToDelete(id)
 		setShowDeleteModal(true)
@@ -40,7 +30,7 @@ export default function AdminDashboard() {
 
 	const confirmDelete = () => {
 		if (productToDelete) {
-			setProducts(products.filter(p => p.id !== productToDelete))
+			setProducts(products.filter(p => p._id !== productToDelete))
 		}
 		setShowDeleteModal(false)
 		setProductToDelete(null)
@@ -53,9 +43,20 @@ export default function AdminDashboard() {
 
 	const handleSaveEdit = (updatedProduct: Product) => {
 		setProducts(
-			products.map(p => (p.id === updatedProduct.id ? updatedProduct : p)),
+			products.map(p => (p._id === updatedProduct._id ? updatedProduct : p)),
 		)
 	}
+
+	useEffect(() => {
+		;(async () => {
+			try {
+				const data = await getCategories()
+				if (data) setCategories(data)
+			} catch (e) {
+				console.log(e)
+			}
+		})()
+	}, [])
 
 	return (
 		<div className='min-h-screen text-text'>
@@ -75,12 +76,7 @@ export default function AdminDashboard() {
 				)}
 
 				{activeTab === 'add-product' && (
-					<AddProductForm
-						formData={formData}
-						onChange={setFormData}
-						onSubmit={handleAddSubmit}
-						onCancel={() => setActiveTab('products')}
-					/>
+					<AddProductForm categories={categories} />
 				)}
 			</div>
 

@@ -1,6 +1,7 @@
 import { AuthUser } from '../lib/authstorage'
 
 export type AuthResponse = {
+	failure: string
 	token: string
 	user: AuthUser
 }
@@ -33,4 +34,12 @@ export async function registerApi(payload: {
 	// if (!res.ok) throw new Error(await res.text())
 	const result = res.json()
 	return result
+}
+
+export async function checkMe(token: string) {
+	const res = await fetch('http://localhost:3001/api/auth/check-me', {
+		headers: { Authorization: `Bearer ${token}` },
+	})
+	if (!res.ok) throw new Error(await res.text())
+	return res.json()
 }

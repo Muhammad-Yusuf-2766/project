@@ -6,7 +6,7 @@ export function AppWithProviders() {
 	const { isLoggedIn, user } = useAuth()
 
 	return (
-		<CartProvider userId={isLoggedIn ? user?.id : undefined}>
+		<CartProvider userId={isLoggedIn ? user?._id : undefined}>
 			<App />
 		</CartProvider>
 	)

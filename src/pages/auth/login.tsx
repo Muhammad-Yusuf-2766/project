@@ -1,12 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Eye, EyeOff, LogIn, ShoppingBag } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import { migrateGuestCartToUser } from '../../lib/cartstorage'
 import { loginApi } from '../../service/userApi'
 
 export default function Login() {
 	const [showPassword, setShowPassword] = useState(false)
+	const { setAuthFromResponse } = useAuth()
+	const navigate = useNavigate()
+	const location = useLocation()
+	const from = (location.state as any)?.from || '/'
 	const [formData, setFormData] = useState({
 		phone: '',
 		password: '',
@@ -15,17 +21,20 @@ export default function Login() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		// Handle login logic here
-
 		const payload = {
 			phone: formData.phone,
 			password: formData.password,
 		}
 		const res = await loginApi(payload)
+		if (res.failure) {
+			return toast.error(res.failure)
+		}
 		if (res.user) {
 			migrateGuestCartToUser(res.user._id)
 			toast.success('Login qilindingiz!')
-		} // bu token+user set qiladi
+			setAuthFromResponse(res)
+			navigate(from, { replace: true })
+		}
 	}
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

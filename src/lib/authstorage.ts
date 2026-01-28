@@ -1,7 +1,7 @@
 // authStorage.ts
 export type AuthUser = {
-	id: string
-	name: string
+	_id: string
+	fullName: string
 	phone: string
 	role: 'admin' | 'seller' | 'user'
 }

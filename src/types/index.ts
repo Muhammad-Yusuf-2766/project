@@ -1,4 +1,5 @@
 export interface Product {
+	_id?: string
 	productId: string
 	title: string
 	category: CategoryType
@@ -22,14 +23,20 @@ export interface User {
 }
 
 export interface ProductFormData {
-	name: string
+	title: string
 	category: CategoryType
 	price: number
 	unit: string
 	description: string
 	image: string
-	stock: number
+	stock?: number
 }
 
-export type CategoryType = 'beef' | 'mutton' | 'chicken' | 'bread' | 'other'
+export type CategoryType =
+	| 'beef'
+	| 'mutton'
+	| 'chicken'
+	| 'bread'
+	| 'other'
+	| ''
 export type FilterCategoryType = CategoryType | 'all'

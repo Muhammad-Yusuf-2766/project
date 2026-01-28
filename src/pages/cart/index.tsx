@@ -8,13 +8,14 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { formatPrice } from '../../lib/helpers'
 
 export default function Cart() {
 	const { items, remove, updateQty } = useCart()
+	const { isLoggedIn } = useAuth()
 	const navigate = useNavigate()
-	const isLoggedIn = false
 
 	const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
 
@@ -27,10 +28,7 @@ export default function Cart() {
 			return navigate('/login', { state: { redirectTo: '/cart' } })
 		}
 
-		// order create...
-		// await api.createOrder(items)
-
-		// clear() // ✅ localStorage ham avtomatik bo‘shab qoladi (effect yozadi)
+		alert(items.map(i => JSON.stringify(i)))
 	}
 
 	return (

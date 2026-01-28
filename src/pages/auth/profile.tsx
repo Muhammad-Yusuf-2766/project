@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 interface UserData {
 	fullName: string
@@ -58,6 +59,8 @@ const formatPrice = (price: number) => {
 
 export default function Profile() {
 	const [isEditing, setIsEditing] = useState(false)
+	const { user, logout } = useAuth()
+
 	const [activeTab, setActiveTab] = useState<
 		'profile' | 'orders' | 'favorites' | 'settings'
 	>('profile')
@@ -102,6 +105,11 @@ export default function Profile() {
 		}
 	}
 
+	const handleLogout = () => {
+		logout()
+		window.location.replace('/')
+	}
+
 	return (
 		<div className='min-h-screen py-8'>
 			<div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
@@ -122,7 +130,7 @@ export default function Profile() {
 								<div className='relative'>
 									<img
 										src={userData.avatar || '/placeholder.svg'}
-										alt={userData.fullName}
+										alt={user?.fullName}
 										className='w-24 h-24 rounded-full object-cover border-4 border-primary/20'
 									/>
 									<button className='absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors shadow-lg'>
@@ -157,7 +165,10 @@ export default function Profile() {
 							</nav>
 
 							{/* Logout Button */}
-							<button className='w-full flex items-center gap-3 px-4 py-3 mt-4 text-red-600 hover:bg-red-50 rounded-xl transition-colors'>
+							<button
+								onClick={() => handleLogout()}
+								className='w-full flex items-center gap-3 px-4 py-3 mt-4 text-red-600 hover:bg-red-50 rounded-xl transition-colors'
+							>
 								<LogOut className='w-5 h-5' />
 								<span className='font-medium'>Chiqish</span>
 							</button>
@@ -250,14 +261,14 @@ export default function Profile() {
 											<input
 												type='tel'
 												name='phone'
-												value={userData.phone}
+												value={user?.phone}
 												onChange={handleChange}
 												className='w-full px-4 py-3 rounded-lg border border-border bg-light text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors'
 											/>
 										) : (
 											<div className='flex items-center gap-3 px-4 py-3 bg-light rounded-lg'>
 												<Phone className='w-5 h-5 text-text-muted' />
-												<span className='text-text'>{userData.phone}</span>
+												<span className='text-text'>{user?.phone}</span>
 											</div>
 										)}
 									</div>

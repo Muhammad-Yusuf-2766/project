@@ -1,15 +1,24 @@
-import { LogIn, Menu, ShoppingCart, User, X } from 'lucide-react'
+import {
+	Blocks,
+	Home,
+	Info,
+	LogIn,
+	Menu,
+	Phone,
+	ShoppingCart,
+	User,
+	X,
+} from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
-interface NavbarProps {
-	isLoggedIn: boolean
-	userRole?: 'admin' | 'seller'
-}
-
-export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
+export default function Navbar() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+	const { isLoggedIn, user } = useAuth()
+	const userRole = user?.role
+
 	const location = useLocation()
 	const currentPath = location.pathname
 	const { itemsCount } = useCart()
@@ -23,7 +32,6 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 							src='/ansor_logo_180px.png'
 							className='w-12 h-12 text-emerald-600'
 						/>
-
 						<span className='text-primary text-2xl font-bold'>Market</span>
 					</Link>
 
@@ -43,6 +51,22 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 							} hover:text-primary transition-colors font-medium`}
 						>
 							Mahsulotlar
+						</Link>
+						<Link
+							to='/about'
+							className={`${
+								currentPath === '/about' ? 'text-primary' : 'text-text'
+							} hover:text-primary transition-colors font-medium`}
+						>
+							Biz haqimizda
+						</Link>
+						<Link
+							to='/contact'
+							className={`${
+								currentPath === '/contact' ? 'text-primary' : 'text-text'
+							} hover:text-primary transition-colors font-medium`}
+						>
+							Aloqa
 						</Link>
 
 						{isLoggedIn && userRole === 'admin' && (
@@ -80,15 +104,13 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 							<span>Savat</span>
 						</Link>
 						{isLoggedIn ? (
-							<>
-								<Link
-									to={'/profile'}
-									className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
-								>
-									<User className='w-4 h-4' />
-									<span>Profile</span>
-								</Link>
-							</>
+							<Link
+								to={'/profile'}
+								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+							>
+								<User className='w-4 h-4' />
+								<span>Mening sahifam</span>
+							</Link>
 						) : (
 							<Link
 								to={'/login'}
@@ -100,7 +122,7 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 						)}
 					</div>
 
-					{/* ===  */}
+					{/* Mobile Menu Button */}
 					<div className='md:hidden flex space-x-5'>
 						<Link
 							to={'/cart'}
@@ -112,10 +134,7 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 							</div>
 							<span>Savat</span>
 						</Link>
-						<button
-							className=''
-							onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-						>
+						<button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
 							{mobileMenuOpen ? (
 								<X className='w-6 h-6 text-gray-700' />
 							) : (
@@ -125,21 +144,40 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 					</div>
 				</div>
 
+				{/* Mobile Menu */}
 				{mobileMenuOpen && (
 					<div className='md:hidden py-4 space-y-3'>
 						<Link
 							to='/'
 							onClick={() => setMobileMenuOpen(false)}
-							className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
+							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
 						>
-							Home
+							<Home className='w-5 h-5' />
+							Asosiy
 						</Link>
 						<Link
 							to='/products'
 							onClick={() => setMobileMenuOpen(false)}
-							className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
+							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
 						>
-							Products
+							<Blocks className='w-5 h-5' />
+							Mahsulotlar
+						</Link>
+						<Link
+							to='/about'
+							onClick={() => setMobileMenuOpen(false)}
+							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
+						>
+							<Info className='w-5 h-5' />
+							Biz haqimizda
+						</Link>
+						<Link
+							to='/contact'
+							onClick={() => setMobileMenuOpen(false)}
+							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
+						>
+							<Phone className='w-5 h-5' />
+							Aloqa
 						</Link>
 						{isLoggedIn && userRole === 'admin' && (
 							<Link
@@ -159,9 +197,23 @@ export default function Navbar({ isLoggedIn, userRole }: NavbarProps) {
 								Dashboard
 							</Link>
 						)}
-						<button className='w-full text-left px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors'>
-							{isLoggedIn ? 'Profile' : 'Sign In'}
-						</button>
+						{isLoggedIn ? (
+							<Link
+								to={'/profile'}
+								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+							>
+								<User className='w-4 h-4' />
+								<span>Mening sahifam</span>
+							</Link>
+						) : (
+							<Link
+								to={'/login'}
+								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
+							>
+								<LogIn className='w-4 h-4' />
+								<span>Login</span>
+							</Link>
+						)}
 					</div>
 				)}
 			</div>

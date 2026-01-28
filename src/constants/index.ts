@@ -16,28 +16,35 @@ import { Product, ProductFormData } from '../types'
 // ====== Home-page ===========//
 export const categories = [
 	{
-		name: 'Beef',
+		title: 'Beef',
+		slug: 'beef',
 		icon: Beef,
 		image:
 			'https://images.pexels.com/photos/65175/pexels-photo-65175.jpeg?auto=compress&cs=tinysrgb&w=400',
 		description: 'Premium quality halal beef',
 	},
 	{
-		name: 'Mutton',
+		title: 'Mutton',
+		slug: 'beef',
+
 		icon: Beef,
 		image:
 			'https://images.pexels.com/photos/361184/asparagus-steak-veal-steak-veal-361184.jpeg?auto=compress&cs=tinysrgb&w=400',
 		description: 'Fresh halal mutton',
 	},
 	{
-		name: 'Chicken',
+		title: 'Chicken',
+		slug: 'beef',
+
 		icon: ChefHat,
 		image:
 			'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400',
 		description: 'Farm-fresh halal chicken',
 	},
 	{
-		name: 'Bread',
+		title: 'Bread',
+		slug: 'beef',
+
 		icon: Wheat,
 		image:
 			'https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=400',
@@ -285,7 +292,7 @@ export const stats = [
 ]
 
 export const initialFormData: ProductFormData = {
-	name: '',
+	title: '',
 	category: 'beef',
 	price: 0,
 	unit: 'kg',
