@@ -1,16 +1,16 @@
+import { LucideIcon } from 'lucide-react'
+
 export interface Product {
-	_id?: string
-	productId: string
+	_id: string
 	title: string
-	category: CategoryType
+	category: string
 	price: number
 	originalPrice?: number
 	unit: string
 	description: string
 	image: string
 	stock: number
-	rating?: number
-	sellerId?: string
+	likeCount?: string
 	createdAt?: string
 }
 
@@ -24,19 +24,22 @@ export interface User {
 
 export interface ProductFormData {
 	title: string
-	category: CategoryType
-	price: number
+	category: string
+	price: number | undefined
+	originalPrice: number | undefined
 	unit: string
 	description: string
-	image: string
-	stock?: number
+	images: string[]
+	stock?: number | undefined
 }
 
-export type CategoryType =
-	| 'beef'
-	| 'mutton'
-	| 'chicken'
-	| 'bread'
-	| 'other'
-	| ''
-export type FilterCategoryType = CategoryType | 'all'
+export type CategoryType = {
+	_id: string
+	title: string
+	slug: string
+	image: string
+	icon: LucideIcon
+	description?: string
+}
+
+export type FilterCategoryType = CategoryType[]

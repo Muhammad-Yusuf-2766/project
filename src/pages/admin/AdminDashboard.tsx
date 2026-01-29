@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { mockProducts } from '../../constants'
 import { getCategories } from '../../service/adminApi'
-import { Product } from '../../types'
-import AddProductForm, { ICategory } from './_components/AddProductForm'
+import { CategoryType, Product } from '../../types'
+import AddProductForm from './_components/AddProductForm'
 import AdminHeader from './_components/AdminHeader'
 import AdminTabs, { AdminTabType } from './_components/AdminTabs'
 import DeleteProductModal from './_components/DeleteProductModel'
@@ -13,7 +13,7 @@ import ProductsTable from './_components/ProductsTable'
 export default function AdminDashboard() {
 	const [activeTab, setActiveTab] = useState<AdminTabType>('overview')
 	const [products, setProducts] = useState<Product[]>(mockProducts)
-	const [categories, setCategories] = useState<ICategory[]>([])
+	const [categories, setCategories] = useState<CategoryType[]>([])
 
 	// Delete modal state
 	const [showDeleteModal, setShowDeleteModal] = useState(false)

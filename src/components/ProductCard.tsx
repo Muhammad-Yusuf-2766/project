@@ -2,7 +2,7 @@ import { Heart, Package, ShoppingCart } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 
 interface Product {
-	productId: string
+	_id: string
 	title: string
 	description: string
 	price: number

@@ -44,24 +44,22 @@ export function CartProvider({
 
 	const add = (item: Omit<CartItem, 'qty'>, qty = 1) => {
 		setItems(prev => {
-			const found = prev.find(p => p.productId === item.productId)
+			const found = prev.find(p => p._id === item._id)
 			return found
-				? prev.map(p =>
-						p.productId === item.productId ? { ...p, qty: p.qty + qty } : p,
-					)
+				? prev.map(p => (p._id === item._id ? { ...p, qty: p.qty + qty } : p))
 				: [...prev, { ...item, qty }]
 		})
 	}
 
 	const updateQty = (productId: string, qty: number) => {
 		setItems(prev => {
-			if (qty <= 0) return prev.filter(p => p.productId !== productId)
-			return prev.map(p => (p.productId === productId ? { ...p, qty } : p))
+			if (qty <= 0) return prev.filter(p => p._id !== productId)
+			return prev.map(p => (p._id === productId ? { ...p, qty } : p))
 		})
 	}
 
 	const remove = (productId: string) => {
-		setItems(prev => prev.filter(p => p.productId !== productId))
+		setItems(prev => prev.filter(p => p._id !== productId))
 	}
 
 	const clear = () => setItems([])

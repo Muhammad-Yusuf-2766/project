@@ -1,9 +1,14 @@
 import { Clock, Star, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { recentProducts } from '../../constants'
 import { formatPrice } from '../../lib/helpers'
+import { Product } from '../../types'
 
-export default function RecentProductsSection() {
+type Props = {
+	products: Product[]
+}
+
+export default function RecentProductsSection({ products }: Props) {
+	console.log(products)
 	return (
 		<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
 			<div className='flex items-center justify-between mb-10'>
@@ -28,33 +33,34 @@ export default function RecentProductsSection() {
 			</div>
 
 			<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
-				{recentProducts.slice(0, 5).map(product => (
+				{products.slice(0, 5).map(product => (
 					<div
-						key={product.id}
+						key={product._id}
 						className='group bg-card rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300'
 					>
 						<div className='relative h-36 overflow-hidden'>
 							<img
 								src={product.image || '/placeholder.svg'}
-								alt={product.name}
+								alt={product.title}
 								className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
 							/>
-							{product.isNew && (
-								<div className='absolute top-2 left-2'>
-									<span className='px-2 py-0.5 bg-primary text-white text-xs font-semibold rounded-full'>
-										Yangi
-									</span>
-								</div>
-							)}
+
+							<div className='absolute top-2 left-2'>
+								<span className='px-2 py-0.5 bg-primary text-white text-xs font-semibold rounded-full'>
+									Yangi
+								</span>
+							</div>
 						</div>
 						<div className='p-3'>
-							<p className='text-text-muted text-xs mb-1'>{product.seller}</p>
+							<p className='text-text-muted text-xs mb-1 line-clamp-1'>
+								{product.description}
+							</p>
 							<h3 className='text-text font-medium text-sm mb-1 line-clamp-1'>
-								{product.name}
+								{product.title}
 							</h3>
 							<div className='flex items-center gap-1 mb-2'>
 								<Star className='w-3 h-3 fill-secondary text-secondary' />
-								<span className='text-text text-xs'>{product.rating}</span>
+								<span className='text-text text-xs'>4.3</span>
 							</div>
 							<span className='text-primary font-bold text-sm'>
 								{formatPrice(product.price)}

@@ -1,9 +1,14 @@
 import { AuthUser } from '../lib/authstorage'
+import { Product } from '../types'
+import { api } from './axiosinctance'
 
 export type AuthResponse = {
 	failure: string
 	token: string
 	user: AuthUser
+}
+export type TGetProductsResponse = {
+	proudcts: Product[]
 }
 
 export async function loginApi(payload: {
@@ -43,3 +48,6 @@ export async function checkMe(token: string) {
 	if (!res.ok) throw new Error(await res.text())
 	return res.json()
 }
+
+export const getProducts = () =>
+	api.get<TGetProductsResponse>('/api/user/products')

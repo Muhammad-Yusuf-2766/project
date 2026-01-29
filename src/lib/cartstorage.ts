@@ -1,8 +1,8 @@
 export type CartItem = {
-	productId: string
+	_id: string
 	title: string
 	price: number
-	image?: string
+	image: string
 	qty: number
 }
 
@@ -38,12 +38,12 @@ function writeKey(key: string, items: CartItem[]) {
 function mergeByProductId(a: CartItem[], b: CartItem[]) {
 	// a + b -> qty qo‘shiladi
 	const map = new Map<string, CartItem>()
-	for (const item of a) map.set(item.productId, { ...item })
+	for (const item of a) map.set(item._id, { ...item })
 	for (const item of b) {
-		const existing = map.get(item.productId)
+		const existing = map.get(item._id)
 		if (existing)
-			map.set(item.productId, { ...existing, qty: existing.qty + item.qty })
-		else map.set(item.productId, { ...item })
+			map.set(item._id, { ...existing, qty: existing.qty + item.qty })
+		else map.set(item._id, { ...item })
 	}
 	return Array.from(map.values())
 }

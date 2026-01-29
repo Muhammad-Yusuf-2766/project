@@ -1,40 +1,51 @@
-import { Filter, Package, Search } from 'lucide-react'
-import { useState } from 'react'
-import Pagination from '../../components/Pagination'
+import { useQuery } from '@tanstack/react-query'
+import { Package } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import CategoryBar from '../../components/CategoryBar'
+import { ProductGridSkeleton } from '../../components/Loader/Loading'
 import ProductCard from '../../components/ProductCard'
-import { categoriesPage, mockProductsPage } from '../../constants'
-import { FilterCategoryType } from '../../types'
+import SearchInput from '../../components/SearchInput'
+import { categoriesPage } from '../../constants'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
+import { fetchProducts, Sort } from '../../service/apiProducts'
 
 type SaleFilter = 'all' | 'sale' | 'new' | 'top'
 
 export default function Products() {
-	const [selectedCategory, setSelectedCategory] =
-		useState<FilterCategoryType>('all')
 	const [searchQuery, setSearchQuery] = useState('')
+	const debouncedSearchQuery = useDebouncedValue(searchQuery, 500)
+
+	const [category, setCategory] = useState<string>('all')
+	const [sort] = useState<Sort>('newest')
+	const [page, setPage] = useState(1)
+	const pageSize = 12
 	const [saleFilter, setSaleFilter] = useState<SaleFilter>('all')
 
-	const filteredProducts = mockProductsPage.filter(product => {
-		const matchesCategory =
-			selectedCategory === 'all' || product.category === selectedCategory
-		const matchesSearch =
-			product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			product.description.toLowerCase().includes(searchQuery.toLowerCase())
-		const matchesSaleFilter =
-			saleFilter === 'all' ||
-			(saleFilter === 'sale' && product.originalPrice !== undefined) ||
-			(saleFilter === 'new' && product.createdAt)
-		return matchesCategory && matchesSearch && matchesSaleFilter
+	// qaysi param o'zgarsa page 1 bo'lsin (UX)
+	useEffect(() => {
+		setPage(1)
+	}, [debouncedSearchQuery, category, sort])
+
+	const params = useMemo(
+		() => ({
+			searchQuery: debouncedSearchQuery,
+			category,
+			sort,
+			page,
+			pageSize,
+		}),
+		[debouncedSearchQuery, category, sort, page, pageSize],
+	)
+
+	const { data, isLoading, isError } = useQuery({
+		queryKey: ['products', params],
+		queryFn: () => fetchProducts(params),
+		placeholderData: prev => prev, // keepPreviousData (v5 uslub)
+		staleTime: 60_000,
 	})
 
-	// ===== Pagination testing ===== //
-	const [currentPage, setCurrentPage] = useState(1)
-	const totalPages = 10
-	const itemsPerPage = 2
-
-	// Calculate which products to show
-	const startIndex = (currentPage - 1) * itemsPerPage
-	const endIndex = startIndex + itemsPerPage
-	const currentProducts = filteredProducts.slice(startIndex, endIndex)
+	const products = data?.products ?? []
+	const meta = data?.meta
 
 	return (
 		<div className='min-h-screen overflow-hidden'>
@@ -53,16 +64,7 @@ export default function Products() {
 				<div className='mb-8'>
 					{/* Filter section */}
 					<div className='grid grid-cols-2 max-md:grid-cols-1 gap-4 items-center'>
-						<div className='relative flex-1'>
-							<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5' />
-							<input
-								type='text'
-								placeholder='Mahsulotlarni qidirish...'
-								value={searchQuery}
-								onChange={e => setSearchQuery(e.target.value)}
-								className='w-full pl-12 pr-4 md:py-3 py-2 border border-border rounded-lg focus:ring-1 focus:ring-secondary focus:outline-none bg-card text-text'
-							/>
-						</div>
+						<SearchInput value={searchQuery} onChange={setSearchQuery} />
 
 						<div className='w-full grid grid-cols-4 gap-2'>
 							<button
@@ -115,106 +117,26 @@ export default function Products() {
 				{/* Category & product render section */}
 				<div className='flex flex-col lg:flex-row gap-8'>
 					<div className='lg:w-64 shrink-0'>
-						<div className='bg-card rounded-lg shadow-md md:p-6 p-3 sticky top-24'>
-							<div className='flex items-center mb-4'>
-								<Filter className='w-5 h-5 mr-2 text-primary' />
-								<h2 className='text-lg font-semibold text-text'>
-									Kategoriyalar
-								</h2>
-							</div>
-
-							{/* md dan kichik: dropdown menu (button + panel) */}
-							<div className='md:hidden'>
-								<details className='group'>
-									<summary className='list-none flex items-center justify-between w-full px-4 py-2 rounded-lg border-border bg-primary text-light cursor-pointer'>
-										<span className='font-medium'>
-											{categoriesPage.find(c => c.id === selectedCategory)
-												?.name ?? 'Barchasi'}
-										</span>
-
-										{/* simple chevron */}
-										<svg
-											className='w-4 h-4 transition-transform group-open:rotate-180'
-											viewBox='0 0 20 20'
-											fill='currentColor'
-											aria-hidden='true'
-										>
-											<path
-												fillRule='evenodd'
-												d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z'
-												clipRule='evenodd'
-											/>
-										</svg>
-									</summary>
-
-									<div className='mt-3 space-y-2 text-text'>
-										{categoriesPage.map(category => {
-											const Icon = category.icon
-											return (
-												<button
-													key={category.id}
-													onClick={() => {
-														setSelectedCategory(
-															category.id as FilterCategoryType,
-														)
-														// menu ni yopish:
-														const details = document.activeElement?.closest(
-															'details',
-														) as HTMLDetailsElement | null
-														if (details) details.open = false
-													}}
-													className={`w-full flex items-center px-4 py-2 rounded-lg transition-all ${
-														selectedCategory === category.id
-															? 'bg-primary text-white shadow-md'
-															: 'hover:bg-light border border-transparent'
-													}`}
-												>
-													<Icon className='w-5 h-5 mr-3' />
-													<span className='font-medium'>{category.name}</span>
-												</button>
-											)
-										})}
-									</div>
-								</details>
-							</div>
-
-							{/* md va katta: hozirgi button list (o‘zgarmaydi) */}
-							<div className='hidden md:block space-y-2 text-text'>
-								{categoriesPage.map(category => {
-									const Icon = category.icon
-									return (
-										<button
-											key={category.id}
-											onClick={() =>
-												setSelectedCategory(category.id as FilterCategoryType)
-											}
-											className={`w-full flex items-center px-4 py-3 rounded-lg transition-all ${
-												selectedCategory === category.id
-													? 'bg-primary text-white shadow-md'
-													: 'hover:bg-light'
-											}`}
-										>
-											<Icon className='w-5 h-5 mr-3' />
-											<span className='font-medium'>{category.name}</span>
-										</button>
-									)
-								})}
-							</div>
-						</div>
+						<CategoryBar
+							categories={categoriesPage}
+							selectedCategory={category}
+							onChange={setCategory}
+						/>
 					</div>
+
+					{isLoading && <ProductGridSkeleton count={3} />}
+					{isError && <div>Xatolik yuz berdi</div>}
 
 					<div className='flex-1'>
 						<div className='mb-4 flex items-center justify-between'>
 							<p className='text-text-secondary'>
 								Ko'rsatilmoqda:{' '}
-								<span className='font-semibold text-text'>
-									{filteredProducts.length}
-								</span>{' '}
+								<span className='font-semibold text-text'>{meta?.total}</span>{' '}
 								mahsulot
 							</p>
 						</div>
 
-						{currentProducts.length === 0 ? (
+						{!isLoading && products.length === 0 ? (
 							<div className='bg-card rounded-lg shadow-md p-12 text-center'>
 								<Package className='w-16 h-16 text-text-muted mx-auto mb-4' />
 								<h3 className='text-xl font-semibold text-text mb-2'>
@@ -226,20 +148,20 @@ export default function Products() {
 							</div>
 						) : (
 							<div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2'>
-								{filteredProducts.map(product => (
-									<ProductCard key={product.productId} product={product} />
+								{products.map(product => (
+									<ProductCard key={product._id} product={product} />
 								))}
 							</div>
 						)}
 
 						{/* Pagination */}
-						<div className='mt-8 sm:mt-12'>
+						{/* <div className='mt-8 sm:mt-12'>
 							<Pagination
-								currentPage={currentPage}
+								currentPage={page}
 								totalPages={totalPages}
 								onPageChange={setCurrentPage}
 							/>
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>

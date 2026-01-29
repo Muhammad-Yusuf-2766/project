@@ -11,10 +11,10 @@ import {
 	Users,
 	Wheat,
 } from 'lucide-react'
-import { Product, ProductFormData } from '../types'
+import { CategoryType, Product, ProductFormData } from '../types'
 
 // ====== Home-page ===========//
-export const categories = [
+export const Categories = [
 	{
 		title: 'Beef',
 		slug: 'beef',
@@ -415,12 +415,42 @@ export const mockProductsPage: Product[] = [
 	},
 ]
 
-export const categoriesPage = [
-	{ id: 'all', name: 'Barchasi', icon: Package },
-	{ id: 'beef', name: 'Mol go`shti', icon: Beef },
-	{ id: 'mutton', name: 'Qo`y go`shti', icon: Beef },
-	{ id: 'chicken', name: 'Tovuq go`shti', icon: ChefHat },
-	{ id: 'bread', name: 'Patir va Nonlar', icon: Wheat },
-	{ id: 'dry fruits', name: 'Quruq mevalar', icon: AppleIcon },
+export const categoriesPage: CategoryType[] = [
+	{ _id: 'all', title: 'Barchasi', slug: 'all', image: '', icon: Package },
+	{
+		_id: 'beef',
+		title: 'Mol go`shti',
+		slug: 'mol-goshti',
+		image: '',
+		icon: Beef,
+	},
+	{
+		_id: 'mutton',
+		title: 'Qo`y go`shti',
+		slug: 'qoy-goshti',
+		image: '',
+		icon: Beef,
+	},
+	{
+		_id: 'chicken',
+		title: 'Tovuq go`shti',
+		slug: 'tovuq-goshti',
+		image: '',
+		icon: ChefHat,
+	},
+	{
+		_id: 'bread',
+		title: 'Patir va Nonlar',
+		slug: 'non-va-patirlar',
+		image: '',
+		icon: Wheat,
+	},
+	{
+		_id: 'dry fruits',
+		title: 'Quruq mevalar',
+		slug: 'quruq-mevalar',
+		image: '',
+		icon: AppleIcon,
+	},
 ]
 // ===== 	Product-pages ====== //

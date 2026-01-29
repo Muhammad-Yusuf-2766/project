@@ -56,7 +56,7 @@ export default function Cart() {
 						<div className='lg:col-span-2 space-y-3 sm:space-y-4'>
 							{items.map(item => (
 								<div
-									key={item.productId}
+									key={item._id}
 									className='bg-card rounded-lg sm:rounded-xl shadow-sm p-3 sm:p-4 md:p-6'
 								>
 									<div className='flex gap-3 sm:gap-4'>
@@ -81,7 +81,7 @@ export default function Cart() {
 													</p>
 												</div>
 												<button
-													onClick={() => remove(item.productId)}
+													onClick={() => remove(item._id)}
 													className='p-1.5 sm:p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0'
 												>
 													<Trash2 className='w-4 h-4 sm:w-5 sm:h-5' />
@@ -92,9 +92,7 @@ export default function Cart() {
 											<div className='flex items-center justify-between mt-2 sm:mt-3 md:mt-4'>
 												<div className='flex items-center gap-2 sm:gap-3'>
 													<button
-														onClick={() =>
-															updateQty(item.productId, item.qty - 1)
-														}
+														onClick={() => updateQty(item._id, item.qty - 1)}
 														className='w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center bg-light rounded-md sm:rounded-lg hover:bg-border transition-colors'
 													>
 														<Minus className='w-3 h-3 sm:w-4 sm:h-4 text-text' />
@@ -103,9 +101,7 @@ export default function Cart() {
 														{item.qty}
 													</span>
 													<button
-														onClick={() =>
-															updateQty(item.productId, item.qty + 1)
-														}
+														onClick={() => updateQty(item._id, item.qty + 1)}
 														className='w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center bg-primary text-white rounded-md sm:rounded-lg hover:bg-primary-hover transition-colors'
 													>
 														<Plus className='w-3 h-3 sm:w-4 sm:h-4' />
@@ -159,7 +155,7 @@ export default function Cart() {
 									</div>
 									{shippingCost > 0 && (
 										<div className='flex items-start gap-2 p-2 sm:p-3 bg-primary/10 rounded-lg'>
-											<Truck className='w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0 mt-0.5' />
+											<Truck className='w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0 mt-0.5' />
 											<p className='text-xs sm:text-sm text-text'>
 												{formatPrice(70000 - subtotal)} dan ko'proq xarid qiling
 												va bepul yetkazib berishdan foydalaning!
