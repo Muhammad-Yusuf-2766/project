@@ -3,7 +3,10 @@ export type AuthUser = {
 	_id: string
 	fullName: string
 	phone: string
-	role: 'admin' | 'seller' | 'user'
+	role: 'admin' | 'customer' | 'user'
+	userImage?: string
+	favorites?: string[]
+	address?: string
 }
 
 const TOKEN_KEY = 'auth:token'

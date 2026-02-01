@@ -159,10 +159,10 @@ export const ProductForm = ({ categories }: Props) => {
 			setProductForm({
 				title: '',
 				category: '',
-				price: 0,
+				price: undefined,
 				originalPrice: undefined,
 				unit: 'kg',
-				stock: 0,
+				stock: undefined,
 				images: [], // xohlasang butunlay olib tashla
 				description: '',
 			})
@@ -231,7 +231,7 @@ export const ProductForm = ({ categories }: Props) => {
 							onChange={handleProductChange}
 							required
 							className='w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-border rounded-lg bg-card text-text focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none text-sm sm:text-base'
-							placeholder="Narxni kiriting (so'm)"
+							placeholder='Narxni kiriting (won)'
 						/>
 					</div>
 
@@ -278,7 +278,7 @@ export const ProductForm = ({ categories }: Props) => {
 							value={productForm.originalPrice ?? ''}
 							onChange={handleProductChange}
 							className='w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-border rounded-lg bg-card text-text focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none text-sm sm:text-base'
-							placeholder="Eski narxni kiriting (so'm)"
+							placeholder='Eski narxni kiriting (won)'
 						/>
 						<p className='mt-1 text-xs text-text-muted'>
 							Chegirma ko'rsatish uchun eski narxni kiriting

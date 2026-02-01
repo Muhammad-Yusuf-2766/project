@@ -73,7 +73,7 @@ export default function About() {
 				className='relative text-white py-16 sm:py-24'
 				style={{
 					backgroundImage:
-						'linear-gradient(rgba(45, 90, 65, 0.9), rgba(45, 90, 65, 0.85)), url(https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=1260)',
+						'linear-gradient(#14141490, #14141499), url(https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=1260)',
 					backgroundSize: 'cover',
 					backgroundPosition: 'center',
 				}}

@@ -54,7 +54,7 @@ const mockOrders = [
 ]
 
 const formatPrice = (price: number) => {
-	return new Intl.NumberFormat('uz-UZ').format(price) + " so'm"
+	return new Intl.NumberFormat('uz-UZ').format(price) + ' won'
 }
 
 export default function Profile() {

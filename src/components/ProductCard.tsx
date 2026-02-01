@@ -1,16 +1,7 @@
 import { Heart, Package, ShoppingCart } from 'lucide-react'
 import { useCart } from '../context/CartContext'
-
-interface Product {
-	_id: string
-	title: string
-	description: string
-	price: number
-	originalPrice?: number
-	unit: string
-	stock: number
-	image: string
-}
+import { resolveImageUrl } from '../lib/mediaUrl'
+import { Product } from '../types'
 
 interface ProductCardProps {
 	product: Product
@@ -27,7 +18,8 @@ export default function ProductCard({ product }: ProductCardProps) {
 		<div className='bg-card rounded-lg sm:rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 snap-start group'>
 			<div className='relative h-28 sm:h-36 md:h-40 overflow-hidden bg-gray-200 group'>
 				<img
-					src={product.image || '/placeholder.svg'}
+					loading='lazy'
+					src={resolveImageUrl(product.images?.[0])}
 					alt={product.title}
 					className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
 				/>

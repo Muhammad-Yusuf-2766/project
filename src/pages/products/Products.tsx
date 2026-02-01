@@ -9,7 +9,7 @@ import { categoriesPage } from '../../constants'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { fetchProducts, Sort } from '../../service/apiProducts'
 
-type SaleFilter = 'all' | 'sale' | 'new' | 'top'
+export type SaleFilter = 'all' | 'sale' | 'new' | 'top' | 'newst' | 'oldest'
 
 export default function Products() {
 	const [searchQuery, setSearchQuery] = useState('')
@@ -49,7 +49,15 @@ export default function Products() {
 
 	return (
 		<div className='min-h-screen overflow-hidden'>
-			<div className='bg-secondary text-white md:py-12 py-6'>
+			<div
+				className='relative text-white py-16 sm:py-24'
+				style={{
+					backgroundImage:
+						'linear-gradient(#14141490, #14141499), url(/banner.webp)',
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+				}}
+			>
 				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 					<h1 className='md:text-4xl text-2xl font-bold mb-4'>
 						Bizning Mahsulotlar

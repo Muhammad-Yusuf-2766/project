@@ -1,26 +1,71 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
 	ArrowLeft,
+	Loader2,
+	MapPin,
 	Minus,
 	Plus,
 	ShoppingBag,
 	Trash2,
 	Truck,
+	X,
 } from 'lucide-react'
+import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
+import Loading from '../../components/Loader/Loading'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { formatPrice } from '../../lib/helpers'
+import { resolveImageUrl } from '../../lib/mediaUrl'
+import { api } from '../../service/axiosinctance'
 
 export default function Cart() {
-	const { items, remove, updateQty } = useCart()
-	const { isLoggedIn } = useAuth()
+	const { items, remove, updateQty, clear } = useCart()
+	const { isLoggedIn, user } = useAuth()
 	const navigate = useNavigate()
 
-	const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+	const [isAddressModalOpen, setIsAddressModalOpen] = useState(false)
+	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+	const [addressInput, setAddressInput] = useState('')
+	const [isSubmitting, setIsSubmitting] = useState(false)
 
-	const shippingCost = subtotal > 70000 ? 0 : 5000
+	const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+	const shippingCost = subtotal >= 70000 ? 0 : 5000
 	const total = subtotal + shippingCost
+
+	const submitOrder = async (address: string) => {
+		setIsSubmitting(true)
+		try {
+			const orderData = {
+				fullName: user?.fullName || user?.fullName || '',
+				items: items.map(item => ({
+					productId: item._id,
+					title: item.title,
+					price: item.price,
+					quantity: item.qty,
+					unit: item.unit,
+				})),
+				subTotal: subtotal,
+				deliveryPrice: shippingCost,
+				totalPrice: total,
+				address: address,
+				customerPhone: user?.phone || '',
+			}
+
+			await api.post('/api/user/order', orderData)
+
+			toast.success('Buyurtma muvaffaqiyatli yuborildi!')
+			clear()
+			navigate('/orders')
+		} catch (error) {
+			toast.error('Buyurtma yuborishda xatolik yuz berdi')
+		} finally {
+			setIsSubmitting(false)
+			setIsAddressModalOpen(false)
+			setIsConfirmModalOpen(false)
+		}
+	}
 
 	const checkout = async () => {
 		if (!isLoggedIn) {
@@ -28,7 +73,33 @@ export default function Cart() {
 			return navigate('/login', { state: { redirectTo: '/cart' } })
 		}
 
-		alert(items.map(i => JSON.stringify(i)))
+		const userAddress = user?.address?.trim()
+
+		if (!userAddress) {
+			setAddressInput('')
+			setIsAddressModalOpen(true)
+		} else {
+			setIsConfirmModalOpen(true)
+		}
+	}
+
+	const handleAddressSubmit = (e: React.FormEvent) => {
+		e.preventDefault()
+		if (!addressInput.trim()) {
+			toast.error('Iltimos, manzilni kiriting')
+			return
+		}
+		submitOrder(addressInput.trim())
+	}
+
+	const handleConfirmAddress = () => {
+		submitOrder(user?.address || '')
+	}
+
+	const handleUseNewAddress = () => {
+		setIsConfirmModalOpen(false)
+		setAddressInput('')
+		setIsAddressModalOpen(true)
 	}
 
 	return (
@@ -63,7 +134,11 @@ export default function Cart() {
 										{/* Product Image */}
 										<div className='shrink-0'>
 											<img
-												src={item.image || '/placeholder.svg'}
+												loading='lazy'
+												src={
+													resolveImageUrl(item.images?.[0]) ||
+													'/placeholder.svg'
+												}
 												alt={item.title}
 												className='w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-lg sm:rounded-xl object-cover'
 											/>
@@ -77,7 +152,7 @@ export default function Cart() {
 														{item.title}
 													</h3>
 													<p className='text-primary font-bold text-sm sm:text-base'>
-														{formatPrice(item.price)} / {item.qty}
+														{formatPrice(item.price)} / {item.qty}-{item.unit}
 													</p>
 												</div>
 												<button
@@ -157,8 +232,8 @@ export default function Cart() {
 										<div className='flex items-start gap-2 p-2 sm:p-3 bg-primary/10 rounded-lg'>
 											<Truck className='w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0 mt-0.5' />
 											<p className='text-xs sm:text-sm text-text'>
-												{formatPrice(70000 - subtotal)} dan ko'proq xarid qiling
-												va bepul yetkazib berishdan foydalaning!
+												{formatPrice(70000 - subtotal)} dan ko{"'"}proq xarid
+												qiling va bepul yetkazib berishdan foydalaning!
 											</p>
 										</div>
 									)}
@@ -184,7 +259,7 @@ export default function Cart() {
 								{/* Payment Methods */}
 								<div className='mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border'>
 									<p className='text-text-muted text-xs sm:text-sm text-center mb-2 sm:mb-3'>
-										Qabul qilinadigan to'lov usullari
+										Qabul qilinadigan to{"'"}lov usullari
 									</p>
 									<div className='flex justify-center gap-2 sm:gap-3'>
 										<div className='px-2 sm:px-3 py-1.5 sm:py-2 bg-light rounded-md sm:rounded-lg'>
@@ -214,11 +289,11 @@ export default function Cart() {
 							<ShoppingBag className='w-12 h-12 text-text-muted' />
 						</div>
 						<h2 className='text-2xl font-bold text-text mb-2'>
-							Savatchangiz bo'sh
+							Savatchangiz bo{"'"}sh
 						</h2>
 						<p className='text-text-muted mb-8 max-w-md mx-auto'>
-							Hali hech qanday mahsulot qo'shilmagan. Mahsulotlarni ko'rib
-							chiqing va sevimlilaringizni qo'shing.
+							Hali hech qanday mahsulot qo{"'"}shilmagan. Mahsulotlarni ko{"'"}
+							rib chiqing va sevimlilaringizni qo{"'"}shing.
 						</p>
 						<Link
 							to='/products'
@@ -230,6 +305,150 @@ export default function Cart() {
 					</div>
 				)}
 			</div>
+
+			{/* Address Input Modal */}
+			{isAddressModalOpen && (
+				<div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
+					<div className='bg-card rounded-xl max-w-md w-full'>
+						{/* Header */}
+						<div className='flex items-center justify-between p-6 border-b border-border'>
+							<div className='flex items-center gap-3'>
+								<div className='w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center'>
+									<MapPin className='w-5 h-5 text-primary' />
+								</div>
+								<h3 className='text-xl font-bold text-text'>
+									Yetkazib berish manzili
+								</h3>
+							</div>
+							<button
+								onClick={() => setIsAddressModalOpen(false)}
+								className='text-text-muted hover:text-text transition-colors'
+							>
+								<X className='w-6 h-6' />
+							</button>
+						</div>
+
+						{/* Form */}
+						<form onSubmit={handleAddressSubmit} className='p-6 space-y-5'>
+							<p className='text-text-muted text-sm'>
+								Buyurtmangizni yetkazib berish uchun to{"'"}liq manzilni
+								kiriting (Koreya manzili formatida).
+							</p>
+
+							<div>
+								<label className='block text-sm font-semibold text-text mb-2'>
+									To{"'"}liq manzil
+								</label>
+								<textarea
+									value={addressInput}
+									onChange={e => setAddressInput(e.target.value)}
+									rows={4}
+									placeholder='예: 서울특별시 강남구 테헤란로 123, 아파트 456호'
+									className='w-full px-4 py-3 border border-border rounded-lg bg-light text-text focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none resize-none'
+									required
+								/>
+								<p className='text-xs text-text-muted mt-2'>
+									Misol: 서울특별시 강남구 테헤란로 123, 아파트 456호
+								</p>
+							</div>
+
+							{/* Actions */}
+							<div className='flex gap-3 pt-2'>
+								<button
+									type='submit'
+									disabled={isSubmitting}
+									className='flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+								>
+									{isSubmitting ? (
+										<>
+											<Loader2 className='w-4 h-4 animate-spin' />
+											Yuborilmoqda...
+										</>
+									) : (
+										'Buyurtma berish'
+									)}
+								</button>
+								<button
+									type='button'
+									onClick={() => setIsAddressModalOpen(false)}
+									disabled={isSubmitting}
+									className='px-6 py-3 bg-light text-text rounded-lg font-semibold hover:bg-border transition-colors disabled:opacity-50'
+								>
+									Bekor qilish
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Address Confirmation Modal */}
+			{isConfirmModalOpen && (
+				<div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
+					<div className='bg-card rounded-xl max-w-md w-full'>
+						{/* Header */}
+						<div className='flex items-center justify-between p-6 border-b border-border'>
+							<div className='flex items-center gap-3'>
+								<div className='w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center'>
+									<MapPin className='w-5 h-5 text-primary' />
+								</div>
+								<h3 className='text-xl font-bold text-text'>
+									Manzilni tasdiqlang
+								</h3>
+							</div>
+							<button
+								onClick={() => setIsConfirmModalOpen(false)}
+								className='text-text-muted hover:text-text transition-colors'
+							>
+								<X className='w-6 h-6' />
+							</button>
+						</div>
+
+						{/* Content */}
+						<div className='p-6 space-y-5'>
+							<p className='text-text-muted text-sm'>
+								Buyurtmangiz quyidagi manzilga yetkazib beriladi. Bu manzil to
+								{"'"}g{"'"}rimi?
+							</p>
+
+							<div className='p-4 bg-light rounded-lg border border-border'>
+								<p className='text-text font-medium'>{user?.address}</p>
+							</div>
+
+							{/* Actions */}
+							<div className='flex flex-col gap-3 pt-2'>
+								<button
+									onClick={handleConfirmAddress}
+									disabled={isSubmitting}
+									className='w-full px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+								>
+									{isSubmitting ? (
+										<>
+											<Loading text='Yuborilmoqda...' className='w-4 h-4' />
+										</>
+									) : (
+										"Ha, to'g'ri manzil"
+									)}
+								</button>
+								<button
+									onClick={handleUseNewAddress}
+									disabled={isSubmitting}
+									className='w-full px-6 py-3 bg-light text-text rounded-lg font-semibold hover:bg-border transition-colors disabled:opacity-50'
+								>
+									Boshqa manzil kiritish
+								</button>
+								<button
+									onClick={() => setIsConfirmModalOpen(false)}
+									disabled={isSubmitting}
+									className='w-full px-6 py-3 text-text-muted hover:text-text transition-colors font-medium'
+								>
+									Bekor qilish
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }

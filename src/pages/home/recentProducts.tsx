@@ -1,6 +1,7 @@
 import { Clock, Star, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { formatPrice } from '../../lib/helpers'
+import { resolveImageUrl } from '../../lib/mediaUrl'
 import { Product } from '../../types'
 
 type Props = {
@@ -40,7 +41,8 @@ export default function RecentProductsSection({ products }: Props) {
 					>
 						<div className='relative h-36 overflow-hidden'>
 							<img
-								src={product.image || '/placeholder.svg'}
+								loading='lazy'
+								src={resolveImageUrl(product.images?.[0])}
 								alt={product.title}
 								className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
 							/>

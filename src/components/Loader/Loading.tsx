@@ -35,7 +35,7 @@ export default function Loading({
 	if (variant === 'spinner') {
 		return (
 			<div className={`${containerClasses} ${className}`}>
-				<div className='flex flex-col items-center gap-3'>
+				<div className='flex items-center gap-3'>
 					<Loader2 className={`${sizeClasses[size]} animate-spin`} />
 					{text && (
 						<p className={`text-text-muted ${textSizeClasses[size]}`}>{text}</p>

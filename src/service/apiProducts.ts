@@ -45,3 +45,11 @@ export async function fetchHomeData() {
 	const res = await api.get<HomeResponse>(`/api/user/home`)
 	return res.data
 }
+
+type ProductDetailResp = {
+	product: Product
+}
+export async function fetchProductDetail(id: string | undefined) {
+	const res = await api.get<ProductDetailResp>(`/api/user/product/${id}`)
+	return res.data.product
+}

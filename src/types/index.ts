@@ -8,7 +8,7 @@ export interface Product {
 	originalPrice?: number
 	unit: string
 	description: string
-	image: string
+	images: string[]
 	stock: number
 	likeCount?: string
 	createdAt?: string

@@ -41,12 +41,6 @@ export default function AdminDashboard() {
 		setShowEditModal(true)
 	}
 
-	const handleSaveEdit = (updatedProduct: Product) => {
-		setProducts(
-			products.map(p => (p._id === updatedProduct._id ? updatedProduct : p)),
-		)
-	}
-
 	useEffect(() => {
 		;(async () => {
 			try {
@@ -94,7 +88,6 @@ export default function AdminDashboard() {
 					setShowEditModal(false)
 					setProductToEdit(null)
 				}}
-				onSave={handleSaveEdit}
 			/>
 		</div>
 	)

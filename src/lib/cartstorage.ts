@@ -2,8 +2,9 @@ export type CartItem = {
 	_id: string
 	title: string
 	price: number
-	image: string
+	images?: string[]
 	qty: number
+	unit: string
 }
 
 const GUEST_KEY = 'cart:guest'
