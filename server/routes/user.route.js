@@ -14,7 +14,12 @@ router.get('/transactions', userMiddleware, userController.getTransactions)
 router.get('/favourites', userMiddleware, userController.getFavourites)
 router.get('/statistics', userMiddleware, userController.getStatistics)
 
-router.post('/add-favorite', userMiddleware, userController.addFavorite)
+router.post('/products/:id/like', userMiddleware, userController.addFavorite)
+router.delete(
+	'/products/:id/unlike',
+	userMiddleware,
+	userController.deleteFavorite,
+)
 // router.post('/stripe/checkout', userMiddleware, userController.stripeCheckout)
 router.post('/order', userMiddleware, userController.createOrder)
 

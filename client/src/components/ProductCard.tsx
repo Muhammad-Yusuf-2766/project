@@ -1,5 +1,7 @@
 import { Heart, Package, ShoppingCart } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { useFavorites } from '../context/FavoritesContext'
+import { useToggleLike } from '../hooks/useToggleLike'
 import { resolveImageUrl } from '../lib/mediaUrl'
 import { Product } from '../types'
 
@@ -13,6 +15,9 @@ const formatPrice = (price: number) => {
 
 export default function ProductCard({ product }: ProductCardProps) {
 	const { add } = useCart()
+	const { mutate: toggleLike, isPending } = useToggleLike()
+	const { isLiked } = useFavorites()
+	const { ready } = useFavorites()
 
 	return (
 		<div className='bg-card rounded-lg sm:rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 snap-start group'>
@@ -69,7 +74,22 @@ export default function ProductCard({ product }: ProductCardProps) {
 							qoldi {product.stock} {product.unit}
 						</span>
 					</div>
-					<Heart className='cursor-pointer text-text w-5 h-5 sm:w-6 sm:h-6' />
+					<button
+						type='button'
+						disabled={!ready || isPending}
+						onClick={e => {
+							e.preventDefault()
+							e.stopPropagation()
+							toggleLike({
+								productId: product._id,
+								prevLiked: isLiked(product._id),
+							})
+						}}
+					>
+						<Heart
+							className={`w-4 h-4 sm:w-5 sm:h-5 ${isLiked(product._id) ? 'fill-red-500 text-red-500' : 'text-text'}`}
+						/>
+					</button>
 				</div>
 
 				<div className='flex items-center gap-2 text-light'>

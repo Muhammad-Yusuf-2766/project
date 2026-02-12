@@ -89,11 +89,6 @@ export default function TopProductsSection({ products }: Props) {
 								alt={product.title}
 								className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
 							/>
-							{/* <div className='absolute top-3 left-3'>
-								<span className='px-3 py-1 bg-secondary text-white text-xs font-semibold rounded-full'>
-									{product.badge}
-								</span>
-							</div> */}
 							{product.originalPrice && (
 								<div className='absolute top-3 right-3'>
 									<span className='px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full'>
@@ -118,7 +113,9 @@ export default function TopProductsSection({ products }: Props) {
 							<div className='flex items-center gap-1 mb-3'>
 								<Heart className='w-4 h-4 fill-secondary text-secondary' />
 
-								<span className='text-text-muted text-sm'>(23)</span>
+								<span className='text-text-muted text-sm'>
+									{product.likeCount || 0}.
+								</span>
 
 								<span className='text-text-muted text-sm'>
 									qoldi {product.stock}
@@ -136,7 +133,11 @@ export default function TopProductsSection({ products }: Props) {
 									)}
 								</div>
 								<button
-									onClick={() => add(product, 1)}
+									onClick={e => {
+										e.preventDefault() // Link navigatsiyasini bloklaydi
+										e.stopPropagation() // click yuqoriga chiqib ketmasin
+										add(product, 1)
+									}}
 									className='p-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
 								>
 									<ShoppingCart className='w-5 h-5' />

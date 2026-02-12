@@ -5,6 +5,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react'
+import toast from 'react-hot-toast'
 import { CartItem, getKey, readLS, writeLS } from '../lib/cartstorage'
 
 type CartCtx = {
@@ -49,16 +50,19 @@ export function CartProvider({
 				? prev.map(p => (p._id === item._id ? { ...p, qty: p.qty + qty } : p))
 				: [...prev, { ...item, qty }]
 		})
+		toast.success('Mahsulot savatga qo‘shildi')
 	}
 
 	const updateQty = (productId: string, qty: number) => {
 		setItems(prev => {
 			if (qty <= 0) return prev.filter(p => p._id !== productId)
+			// toast.success('Savat yangilandi')
 			return prev.map(p => (p._id === productId ? { ...p, qty } : p))
 		})
 	}
 
 	const remove = (productId: string) => {
+		toast.success('Mahsulot savatdan o‘chirildi')
 		setItems(prev => prev.filter(p => p._id !== productId))
 	}
 

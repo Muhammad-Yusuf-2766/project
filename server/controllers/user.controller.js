@@ -330,17 +330,44 @@ class UserController {
 	// [POST] /user/add-favorite
 	async addFavorite(req, res, next) {
 		try {
-			const { productId } = req.body
+			console.log('Adding favorite...')
+			const { id } = req.params
 			const userId = req.user._id
 			const isExist = await userModel.findOne({
 				_id: userId,
-				favorites: productId,
+				favorites: id,
 			})
-			if (isExist) return res.json({ failure: 'Product already in favorites' })
+			if (isExist)
+				return res.status(409).json({ message: 'Already in favorites' })
+			const product = await productModel.findById(id)
+			if (!product)
+				return res.status(404).json({ message: 'Product not found' })
+			product.likeCount += 1
+			await product.save()
 			const user = await userModel.findById(userId)
-			user.favorites.push(productId)
+			user.favorites.push(id)
 			await user.save()
-			return res.json({ status: 200 })
+			return res.json({ liked: true, likeCount: product.likeCount })
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	// [DELETE] /user/delete-favorite/:id
+	async deleteFavorite(req, res, next) {
+		try {
+			console.log('Deleting favorite...')
+			const { id } = req.params
+			const userId = req.user._id
+			const user = await userModel.findById(userId)
+			const product = await productModel.findById(id)
+			if (!product)
+				return res.status(404).json({ message: 'Product not found' })
+			product.likeCount = Math.max(0, product.likeCount - 1)
+			await product.save()
+			user.favorites.pull(id)
+			await user.save()
+			return res.json({ liked: false, likeCount: product.likeCount })
 		} catch (error) {
 			next(error)
 		}
@@ -419,18 +446,18 @@ class UserController {
 		}
 	}
 	// [DELETE] /user/delete-favorite/:id
-	async deleteFavorite(req, res, next) {
-		try {
-			const { id } = req.params
-			const userId = req.user._id
-			const user = await userModel.findById(userId)
-			user.favorites.pull(id)
-			await user.save()
-			return res.json({ status: 200 })
-		} catch (error) {
-			next(error)
-		}
-	}
+	// async deleteFavorite(req, res, next) {
+	// 	try {
+	// 		const { id } = req.params
+	// 		const userId = req.user._id
+	// 		const user = await userModel.findById(userId)
+	// 		user.favorites.pull(id)
+	// 		await user.save()
+	// 		return res.json({ status: 200 })
+	// 	} catch (error) {
+	// 		next(error)
+	// 	}
+	// }
 }
 
 module.exports = new UserController()

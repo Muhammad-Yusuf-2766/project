@@ -14,6 +14,8 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { CartItemSkeleton } from '../../components/Loader/Loading'
 import { useCart } from '../../context/CartContext'
+import { useFavorites } from '../../context/FavoritesContext'
+import { useToggleLike } from '../../hooks/useToggleLike'
 import { resolveImageUrl } from '../../lib/mediaUrl'
 import { fetchProductDetail } from '../../service/apiProducts'
 // import { CategoryType } from '../types'
@@ -26,8 +28,9 @@ export default function ProductDetail() {
 	const { id } = useParams()
 	const [selectedImage, setSelectedImage] = useState(0)
 	const [quantity, setQuantity] = useState(1)
-	const [isFavorite, setIsFavorite] = useState(false)
 	const { add } = useCart()
+	const { ready, isLiked } = useFavorites()
+	const { mutate: toggleLike, isPending } = useToggleLike()
 
 	const {
 		data: product,
@@ -63,6 +66,12 @@ export default function ProductDetail() {
 				</Link>
 			</div>
 		)
+
+	if (!id) return null
+
+	const productId = product._id // yoki useParams() dan
+
+	const isFavorite = ready && isLiked(productId)
 
 	if (error)
 		return (

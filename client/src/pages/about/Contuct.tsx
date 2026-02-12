@@ -296,7 +296,7 @@ export default function Contact() {
 								</h3>
 								<div className='flex gap-3'>
 									<a
-										href='https://t.me/ansormarket'
+										href='https://t.me/ansor_onlayn_halol'
 										target='_blank'
 										rel='noopener noreferrer'
 										className='w-10 h-10 sm:w-12 sm:h-12 bg-card rounded-xl flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors shadow-sm'
