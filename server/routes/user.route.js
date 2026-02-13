@@ -20,7 +20,7 @@ router.delete(
 	userMiddleware,
 	userController.deleteFavorite,
 )
-// router.post('/stripe/checkout', userMiddleware, userController.stripeCheckout)
+
 router.post('/order', userMiddleware, userController.createOrder)
 
 router.put('/update-profile', userMiddleware, userController.updateProfile)

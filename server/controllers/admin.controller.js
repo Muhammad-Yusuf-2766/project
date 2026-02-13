@@ -110,45 +110,46 @@ class AdminController {
 	async getOrders(req, res, next) {
 		try {
 			// 1) Query params
-			const page = Math.max(parseInt(req.query.page ?? '1', 10), 1)
-			const limitRaw = parseInt(req.query.limit ?? '10', 10)
-			const limit = Math.min(Math.max(limitRaw, 1), 100) // 1..100
-			const skipAmount = (page - 1) * limit
-
-			const { status, search, sort, userId, from, to } = req.query
+			const { searchQuery, sort, status, page, pageSize } = req.query
+			const skipAmount = (+page - 1) * +pageSize
 
 			// 2) Build Mongo query
 			const query = {}
 
 			// status filter
-			if (status && ['pending', 'sending', 'completed'].includes(status)) {
-				query.status = status
+			const statusRaw = String(req.query.status ?? 'all').trim()
+			const allowedStatuses = new Set([
+				'all',
+				'pending',
+				'sending',
+				'completed',
+			])
+			if (!allowedStatuses.has(statusRaw)) {
+				return res
+					.status(400)
+					.json({ success: false, message: `Invalid status: ${statusRaw}` })
 			}
-
-			// userId filter (admin xohlaganda)
-			if (userId && mongoose.Types.ObjectId.isValid(userId)) {
-				query.userId = userId
-			}
+			if (statusRaw !== 'all') query.status = statusRaw
 
 			// search (fullName, items.productTitle bo'yicha)
-			if (search && String(search).trim()) {
-				const s = String(search).trim()
+			if (searchQuery && String(searchQuery).trim()) {
+				const search = String(searchQuery).trim()
 				query.$or = [
-					{ fullName: { $regex: s, $options: 'i' } },
-					{ 'items.productTitle': { $regex: s, $options: 'i' } },
+					{ fullName: { $regex: search, $options: 'i' } },
+					{ customerPhone: { $regex: search, $options: 'i' } },
+					{ 'items.title': { $regex: search, $options: 'i' } },
 				]
 			}
 
-			// date range (createdAt)
-			if (from || to) {
-				query.createdAt = {}
-				if (from) query.createdAt.$gte = new Date(from)
-				if (to) query.createdAt.$lte = new Date(to)
+			// sort mapping
+			const sortRaw = String(req.query.sort ?? 'newest')
+			const sortMap = {
+				newest: '-createdAt',
+				oldest: 'createdAt',
+				highest: '-totalPrice',
+				lowest: 'totalPrice',
 			}
-
-			// 3) sort
-			// default: newest first
-			const sortValue = (sort && String(sort).trim()) || '-createdAt'
+			const sortValue = sortMap[sortRaw] ?? '-createdAt'
 
 			// 4) fetch
 			const [totalOrders, orders] = await Promise.all([
@@ -157,7 +158,7 @@ class AdminController {
 					.find(query)
 					.sort(sortValue)
 					.skip(skipAmount)
-					.limit(limit)
+					.limit(pageSize)
 					.lean(),
 			])
 
@@ -168,7 +169,7 @@ class AdminController {
 				success: true,
 				meta: {
 					page,
-					limit,
+					limit: +pageSize,
 					total: totalOrders,
 					isNext,
 				},
@@ -369,19 +370,22 @@ class AdminController {
 			next(error)
 		}
 	}
+
 	// [PUT] /admin/update-order/:id
 	async updateOrder(req, res, next) {
 		try {
 			const { status } = req.body
 			const { id } = req.params
 			const updatedOrder = await orderModel.findByIdAndUpdate(id, { status })
+
 			if (!updatedOrder)
-				return res.json({ failure: 'Failed while updating order' })
-			return res.json({ success: 'Order updated successfully' })
+				return res.status(400).json({ failure: 'Failed while updating order' })
+			return res.status(200).json({ success: 'Order updated successfully' })
 		} catch (error) {
 			next(error)
 		}
 	}
+
 	// [DELETE] /admin/delete-product/:id
 	async deleteProduct(req, res, next) {
 		try {
@@ -391,7 +395,9 @@ class AdminController {
 				return res
 					.status(401)
 					.json({ failure: true, message: 'Mahsulotni o`chirishda hatolik' })
-			return res.json({ status: 203 })
+			return res
+				.status(200)
+				.json({ success: true, message: 'Mahsulot o`chirildi' })
 		} catch (error) {
 			next(error)
 		}
