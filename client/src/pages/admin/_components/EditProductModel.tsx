@@ -2,15 +2,16 @@ import { Upload, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import Loading from '../../../components/Loader/Loading'
+import { productMeasures } from '../../../constants'
 import { resolveImageUrl } from '../../../lib/mediaUrl'
 import { api } from '../../../service/axiosinctance'
-import { Product } from '../../../types'
+import { CategoryType, Product } from '../../../types'
 
 interface EditProductModalProps {
 	isOpen: boolean
 	product: Product | null
 	onClose: () => void
-	// onSave: (product: Product) => void
+	categories: CategoryType[]
 }
 
 const MAX_IMAGES = 4
@@ -18,8 +19,8 @@ const MAX_IMAGES = 4
 export default function EditProductModal({
 	isOpen,
 	product,
+	categories,
 	onClose,
-	// onSave,
 }: EditProductModalProps) {
 	const [formData, setFormData] = useState<Product | null>(null)
 	const [deletingImages, setDeletingImages] = useState<string[]>([])
@@ -285,11 +286,11 @@ export default function EditProductModal({
 								}
 								className='w-full px-4 py-3 border border-border rounded-lg bg-light text-text focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none'
 							>
-								<option value='beef'>Beef</option>
-								<option value='mutton'>Mutton</option>
-								<option value='chicken'>Chicken</option>
-								<option value='bread'>Bread</option>
-								<option value='other'>Other</option>
+								{categories.map(category => (
+									<option key={category._id} value={category.slug}>
+										{category.title}
+									</option>
+								))}
 							</select>
 						</div>
 
@@ -313,7 +314,7 @@ export default function EditProductModal({
 
 						<div>
 							<label className='block text-sm font-semibold text-text mb-2'>
-								Qiymati
+								O'lchov birligi
 							</label>
 							<select
 								value={formData.unit}
@@ -322,10 +323,11 @@ export default function EditProductModal({
 								}
 								className='w-full px-4 py-3 border border-border rounded-lg bg-light text-text focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none'
 							>
-								<option value='kg'>Kilogram (kg)</option>
-								<option value='piece'>Piece</option>
-								<option value='loaf'>Loaf</option>
-								<option value='lb'>Pound (lb)</option>
+								{productMeasures.map(measure => (
+									<option key={measure.value} value={measure.value}>
+										{measure.label}
+									</option>
+								))}
 							</select>
 						</div>
 

@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FolderPlus, Plus, Upload, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import Loading from '../../../components/Loader/Loading'
+import { productMeasures } from '../../../constants'
 import {
 	createCategory,
 	createProduct,
@@ -118,6 +120,26 @@ export const ProductForm = ({ categories }: Props) => {
 		setProductImagePreviews([])
 	}
 
+	const queryClient = useQueryClient()
+
+	const submitMutation = useMutation({
+		mutationFn: ({ formData }: { formData: FormData }) =>
+			createProduct(formData),
+
+		onSuccess: async res => {
+			toast.success("Mahsulot muvaffaqiyatli qo'shildi")
+
+			if (res.status === 201) {
+				await queryClient.refetchQueries({
+					queryKey: ['products'],
+					type: 'all',
+					// sizdagi real products queryKey bilan mos bo‘lsin
+					// sizdagi GET products function
+				})
+			}
+		},
+	})
+
 	const handleProdutSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		setIsloading(true)
@@ -151,11 +173,9 @@ export const ProductForm = ({ categories }: Props) => {
 			})
 
 			// API call (axios yoki fetch)
-			await createProduct(formData)
+			await submitMutation.mutateAsync({ formData })
 
-			toast.success('Mahsulot muvaffaqiyatli yaratildi!')
 			setIsloading(false)
-
 			setProductForm({
 				title: '',
 				category: '',
@@ -245,10 +265,11 @@ export const ProductForm = ({ categories }: Props) => {
 							onChange={handleProductChange}
 							className='w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-border rounded-lg bg-card text-text focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none text-sm sm:text-base'
 						>
-							<option value='kg'>Kilogram (kg)</option>
-							<option value='dona'>Dona</option>
-							<option value='litr'>Litr</option>
-							<option value='pachka'>Pachka</option>
+							{productMeasures.map(measure => (
+								<option key={measure.value} value={measure.value}>
+									{measure.label}
+								</option>
+							))}
 						</select>
 					</div>
 

@@ -1,6 +1,6 @@
 import { ListCollapse, Plus } from 'lucide-react'
 
-export type AdminTabType = 'overview' | 'products' | 'add-product'
+export type AdminTabType = 'overview' | 'products' | 'add-product' | 'orders'
 
 interface AdminTabsProps {
 	activeTab: AdminTabType
@@ -30,6 +30,19 @@ export default function AdminTabs({ activeTab, onTabChange }: AdminTabsProps) {
 			>
 				Mahsulotlarni boshqarish
 			</button>
+
+			<button
+				onClick={() => onTabChange('orders')}
+				className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center shadow-lg ${
+					activeTab === 'orders'
+						? 'bg-primary text-white'
+						: 'bg-card text-text hover:bg-light'
+				}`}
+			>
+				<ListCollapse className='w-5 h-5 mr-2' />
+				Buyurtmalar
+			</button>
+
 			<button
 				onClick={() => onTabChange('add-product')}
 				className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center shadow-lg ${
@@ -40,17 +53,6 @@ export default function AdminTabs({ activeTab, onTabChange }: AdminTabsProps) {
 			>
 				<Plus className='w-5 h-5 mr-2' />
 				Mahsulot qo'shish
-			</button>
-			<button
-				onClick={() => onTabChange('add-product')}
-				className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center shadow-lg ${
-					activeTab === 'add-product'
-						? 'bg-primary text-white'
-						: 'bg-card text-text hover:bg-light'
-				}`}
-			>
-				<ListCollapse className='w-5 h-5 mr-2' />
-				Buyurtmalar
 			</button>
 		</div>
 	)

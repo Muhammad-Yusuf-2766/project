@@ -151,7 +151,15 @@ export default function ProductDetail() {
 									</div>
 								)}
 								<button
-									onClick={() => setIsFavorite(!isFavorite)}
+									disabled={!ready || isPending}
+									onClick={e => {
+										e.preventDefault()
+										e.stopPropagation()
+										toggleLike({
+											productId: product._id,
+											prevLiked: isLiked(product._id),
+										})
+									}}
 									className={`absolute top-3 sm:top-4 right-3 sm:right-4 p-2 sm:p-2.5 rounded-full transition-colors ${
 										isFavorite
 											? 'bg-red-500 text-white'

@@ -35,3 +35,13 @@ export const getCategories = async (): Promise<CategoryType[]> => {
 	const res = await api.get<GetCategories>('/api/user/categories')
 	return res.data.categories
 }
+
+export const updateOrderStatus = async (id: string, status: string) => {
+	const res = await api.put(`/api/admin/update-order/${id}`, { status })
+	return res
+}
+
+export const deleteProduct = async (id: string) => {
+	const res = await api.delete(`/api/admin/product/${id}`)
+	return res
+}

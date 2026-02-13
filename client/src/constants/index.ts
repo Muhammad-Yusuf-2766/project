@@ -11,21 +11,29 @@ import {
 	Users,
 	Wheat,
 } from 'lucide-react'
-import { CategoryType, Product, ProductFormData } from '../types'
+import { CategoryType, Order, Product } from '../types'
 
 // ====== Home-page ===========//
 export const Categories = [
 	{
-		title: 'Beef',
-		slug: 'beef',
+		label: 'Barchasi',
+		value: 'all',
+		icon: Package,
+		image:
+			'https://images.pexels.com/photos/65175/pexels-photo-65175.jpeg?auto=compress&cs=tinysrgb&w=400',
+		description: 'Premium quality halal beef',
+	},
+	{
+		label: 'Beef',
+		value: 'beef',
 		icon: Beef,
 		image:
 			'https://images.pexels.com/photos/65175/pexels-photo-65175.jpeg?auto=compress&cs=tinysrgb&w=400',
 		description: 'Premium quality halal beef',
 	},
 	{
-		title: 'Mutton',
-		slug: 'beef',
+		label: 'Mutton',
+		value: 'mutton',
 
 		icon: Beef,
 		image:
@@ -33,8 +41,8 @@ export const Categories = [
 		description: 'Fresh halal mutton',
 	},
 	{
-		title: 'Chicken',
-		slug: 'beef',
+		label: 'Chicken',
+		value: 'chicken',
 
 		icon: ChefHat,
 		image:
@@ -42,8 +50,8 @@ export const Categories = [
 		description: 'Farm-fresh halal chicken',
 	},
 	{
-		title: 'Bread',
-		slug: 'beef',
+		label: 'Bread',
+		value: 'bread',
 
 		icon: Wheat,
 		image:
@@ -237,7 +245,7 @@ export const recentProducts = [
 // ===== 	Admin-pages ====== //
 export const mockProducts: Product[] = [
 	{
-		productId: '1',
+		_id: '1',
 		title: 'Premium Angus Beef',
 		category: 'beef',
 		price: 15000,
@@ -291,130 +299,6 @@ export const stats = [
 	},
 ]
 
-export const initialFormData: ProductFormData = {
-	title: '',
-	category: 'beef',
-	price: 0,
-	unit: 'kg',
-	description: '',
-	image: '',
-	stock: 0,
-}
-// ===== 	Admin-pages ====== //
-
-// ===== 	Product-pages ====== //
-export const mockProductsPage: Product[] = [
-	{
-		productId: '1',
-		title: 'Premium Angus Beef',
-		category: 'beef',
-		price: 14000,
-		originalPrice: 18000, // On Sale
-		unit: 'kg',
-		description:
-			'High-quality halal Angus beef, perfect for grilling and roasting',
-		image:
-			'https://images.pexels.com/photos/65175/pexels-photo-65175.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 50,
-		sellerId: '1',
-		createdAt: '2024-01-01',
-	},
-	{
-		productId: '2',
-		title: 'Fresh Lamb Chops',
-		category: 'mutton',
-		price: 15700,
-		unit: 'kg',
-		description: 'Tender halal lamb chops, ideal for special occasions',
-		image:
-			'https://images.pexels.com/photos/361184/asparagus-steak-veal-steak-veal-361184.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 30,
-		sellerId: '2',
-		createdAt: '2024-01-02',
-	},
-	{
-		productId: '3',
-		title: 'Whole Chicken',
-		category: 'chicken',
-		price: 12000,
-		originalPrice: 14000, // On Sale
-		unit: 'piece',
-		description: 'Farm-fresh halal chicken, cleaned and ready to cook',
-		image:
-			'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 100,
-		sellerId: '1',
-		createdAt: '2024-01-03',
-	},
-	{
-		productId: '4',
-		title: 'Artisan Sourdough Bread',
-		category: 'bread',
-		price: 3000,
-		unit: 'loaf',
-		description: 'Freshly baked sourdough with a crispy crust',
-		image:
-			'https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 40,
-		sellerId: '3',
-		createdAt: '2024-01-04',
-	},
-	{
-		productId: '5',
-		title: 'Ground Beef',
-		category: 'beef',
-		price: 16000,
-		originalPrice: 18000, // On Sale
-		unit: 'kg',
-		description: 'Lean halal ground beef, perfect for burgers and meatballs',
-		image:
-			'https://images.pexels.com/photos/3688/food-dinner-lunch-unhealthy.jpg?auto=compress&cs=tinysrgb&w=400',
-		stock: 60,
-		sellerId: '2',
-		createdAt: '2024-01-05',
-	},
-	{
-		productId: '6',
-		title: 'Chicken Breast',
-		category: 'chicken',
-		price: 13500,
-		unit: 'kg',
-		description: 'Boneless halal chicken breast, high in protein',
-		image:
-			'https://images.pexels.com/photos/616354/pexels-photo-616354.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 75,
-		sellerId: '1',
-		createdAt: '2024-01-06',
-	},
-	{
-		productId: '7',
-		title: 'Whole Wheat Bread',
-		category: 'bread',
-		price: 4000,
-		originalPrice: 5000, // On Sale
-		unit: 'loaf',
-		description: 'Healthy whole wheat bread, baked fresh daily',
-		image:
-			'https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 50,
-		sellerId: '3',
-		createdAt: '2024-01-07',
-	},
-	{
-		productId: '8',
-		title: 'Leg of Lamb',
-		category: 'mutton',
-		price: 14000,
-		unit: 'kg',
-		description: 'Premium halal leg of lamb, perfect for roasting',
-		image:
-			'https://images.pexels.com/photos/769289/pexels-photo-769289.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 25,
-		sellerId: '2',
-		createdAt: '2024-01-08',
-	},
-]
-
 export const categoriesPage: CategoryType[] = [
 	{ _id: 'all', title: 'Barchasi', slug: 'all', image: '', icon: Package },
 	{
@@ -453,4 +337,202 @@ export const categoriesPage: CategoryType[] = [
 		icon: AppleIcon,
 	},
 ]
-// ===== 	Product-pages ====== //
+
+export const productMeasures = [
+	{ value: 'kg', label: 'Kilogram (kg)' },
+	{ value: 'dona', label: 'Dona' },
+	{ value: 'litr', label: 'Litr (l)' },
+	{ value: 'pachka', label: 'Pachka (qadoq)' },
+]
+
+export const mockOrders: Order[] = [
+	{
+		_id: '1',
+		userId: 'u1',
+		fullName: 'Aziz Karimov',
+		items: [
+			{
+				productId: 'p1',
+				title: 'Olma (Fuji)',
+				quantity: 3,
+				unit: 'kg',
+				price: 18000,
+				originalPrice: 22000,
+				subPrice: 54000,
+			},
+			{
+				productId: 'p2',
+				title: 'Banan',
+				quantity: 2,
+				unit: 'kg',
+				price: 25000,
+				originalPrice: null,
+				subPrice: 50000,
+			},
+		],
+		subTotal: 104000,
+		deliveryPrice: 10000,
+		totalPrice: 114000,
+		status: 'pending',
+		address: 'Toshkent, Chilonzor tumani, 9-kvartal, 15-uy',
+		customerPhone: '+998901234567',
+		createdAt: '2026-02-10T08:30:00.000Z',
+		updatedAt: '2026-02-10T08:30:00.000Z',
+	},
+	{
+		_id: '2',
+		userId: 'u2',
+		fullName: 'Dilshod Rahimov',
+		items: [
+			{
+				productId: 'p3',
+				title: 'Sut (1L)',
+				quantity: 5,
+				unit: 'dona',
+				price: 12000,
+				originalPrice: null,
+				subPrice: 60000,
+			},
+		],
+		subTotal: 60000,
+		deliveryPrice: 5000,
+		totalPrice: 65000,
+		status: 'sending',
+		address: 'Toshkent, Yunusobod tumani, 4-kvartal, 7-uy',
+		customerPhone: '+998937654321',
+		createdAt: '2026-02-09T14:15:00.000Z',
+		updatedAt: '2026-02-10T09:00:00.000Z',
+	},
+	{
+		_id: '3',
+		userId: 'u3',
+		fullName: 'Malika Toshpulatova',
+		items: [
+			{
+				productId: 'p4',
+				title: 'Non (oq)',
+				quantity: 10,
+				unit: 'dona',
+				price: 3000,
+				originalPrice: 3500,
+				subPrice: 30000,
+			},
+			{
+				productId: 'p5',
+				title: 'Pishloq',
+				quantity: 1,
+				unit: 'kg',
+				price: 85000,
+				originalPrice: null,
+				subPrice: 85000,
+			},
+			{
+				productId: 'p6',
+				title: 'Tuxum (10 dona)',
+				quantity: 2,
+				unit: 'dona',
+				price: 22000,
+				originalPrice: 25000,
+				subPrice: 44000,
+			},
+		],
+		subTotal: 159000,
+		deliveryPrice: 15000,
+		totalPrice: 174000,
+		status: 'completed',
+		address: "Samarqand, Registon ko'chasi, 22-uy",
+		customerPhone: '+998911112233',
+		createdAt: '2026-02-08T10:00:00.000Z',
+		updatedAt: '2026-02-09T16:30:00.000Z',
+	},
+	{
+		_id: '4',
+		userId: 'u4',
+		fullName: 'Bobur Ismoilov',
+		items: [
+			{
+				productId: 'p7',
+				title: 'Guruch (Laser)',
+				quantity: 5,
+				unit: 'kg',
+				price: 28000,
+				originalPrice: 32000,
+				subPrice: 140000,
+			},
+		],
+		subTotal: 140000,
+		deliveryPrice: 10000,
+		totalPrice: 150000,
+		status: 'pending',
+		address: 'Buxoro, Kogon tumani, Navbahor MFY',
+		customerPhone: '+998945556677',
+		createdAt: '2026-02-11T07:45:00.000Z',
+		updatedAt: '2026-02-11T07:45:00.000Z',
+	},
+	{
+		_id: '5',
+		userId: 'u5',
+		fullName: 'Nodira Umarova',
+		items: [
+			{
+				productId: 'p8',
+				title: 'Pomidor',
+				quantity: 4,
+				unit: 'kg',
+				price: 15000,
+				originalPrice: null,
+				subPrice: 60000,
+			},
+			{
+				productId: 'p9',
+				title: 'Bodring',
+				quantity: 3,
+				unit: 'kg',
+				price: 12000,
+				originalPrice: null,
+				subPrice: 36000,
+			},
+		],
+		subTotal: 96000,
+		deliveryPrice: 8000,
+		totalPrice: 104000,
+		status: 'sending',
+		address: "Namangan, Markaziy ko'cha, 5-uy",
+		customerPhone: '+998907778899',
+		createdAt: '2026-02-10T16:20:00.000Z',
+		updatedAt: '2026-02-11T10:00:00.000Z',
+	},
+	{
+		_id: '6',
+		userId: 'u6',
+		fullName: 'Sardor Mirzayev',
+		items: [
+			{
+				productId: 'p10',
+				title: 'Coca-Cola (1.5L)',
+				quantity: 6,
+				unit: 'dona',
+				price: 10000,
+				originalPrice: 12000,
+				subPrice: 60000,
+			},
+			{
+				productId: 'p11',
+				title: 'Chips (Lays)',
+				quantity: 4,
+				unit: 'dona',
+				price: 8000,
+				originalPrice: null,
+				subPrice: 32000,
+			},
+		],
+		subTotal: 92000,
+		deliveryPrice: 5000,
+		totalPrice: 97000,
+		status: 'completed',
+		address: "Farg'ona, Quva tumani, Mustaqillik ko'chasi, 11-uy",
+		customerPhone: '+998933334455',
+		createdAt: '2026-02-07T12:00:00.000Z',
+		updatedAt: '2026-02-08T14:00:00.000Z',
+	},
+]

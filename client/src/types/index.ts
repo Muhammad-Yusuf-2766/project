@@ -43,3 +43,30 @@ export type CategoryType = {
 }
 
 export type FilterCategoryType = CategoryType[]
+
+export type OrderStatus = 'pending' | 'sending' | 'completed'
+
+export interface OrderItem {
+	productId: string
+	title: string
+	quantity: number
+	unit: string
+	price: number
+	originalPrice: number | null
+	subPrice: number | null
+}
+
+export interface Order {
+	_id: string
+	userId: string
+	fullName: string
+	items: OrderItem[]
+	subTotal: number
+	deliveryPrice: number
+	totalPrice: number
+	status: OrderStatus
+	address: string
+	customerPhone: string
+	createdAt: string
+	updatedAt: string
+}

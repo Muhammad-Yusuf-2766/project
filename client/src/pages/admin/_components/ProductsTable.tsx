@@ -1,26 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
 import { Edit, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import {
-	DropdownCategoryBar,
-	DropdownFilterBar,
-} from '../../../components/CategoryBar'
 import { TableSkeleton } from '../../../components/Loader/Loading'
-import SearchInput from '../../../components/SearchInput'
-import { categoriesPage } from '../../../constants'
+import { useCategories } from '../../../hooks/categoriesQuery'
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
 import { formatPrice } from '../../../lib/helpers'
 import { resolveImageUrl } from '../../../lib/mediaUrl'
-import { fetchProducts, Sort } from '../../../service/apiProducts'
+import { fetchProducts, SortProducts } from '../../../service/apiProducts'
 import { Product } from '../../../types'
+import TableHeaders from './TableHeaders'
 
 interface ProductsTableProps {
-	products?: Product[]
 	onEdit: (product: Product) => void
 	onDelete: (id: string) => void
 }
-
-const filters = ['newest', 'oldest', 'sale']
 
 export default function ProductsTable({
 	onEdit,
@@ -30,10 +23,9 @@ export default function ProductsTable({
 	const debouncedSearchQuery = useDebouncedValue(searchQuery, 500)
 
 	const [category, setCategory] = useState<string>('all')
-	const [sort] = useState<Sort>('newest')
+	const [sort, setSort] = useState('newest')
 	const [page, setPage] = useState(1)
 	const pageSize = 12
-	const [filter, setFilter] = useState<string>('Newest')
 
 	// qaysi param o'zgarsa page 1 bo'lsin (UX)
 	useEffect(() => {
@@ -44,52 +36,59 @@ export default function ProductsTable({
 		() => ({
 			searchQuery: debouncedSearchQuery,
 			category,
-			sort,
+			sort: sort as SortProducts,
 			page,
 			pageSize,
 		}),
 		[debouncedSearchQuery, category, sort, page, pageSize],
 	)
 
+	const { data: categories } = useCategories()
+
 	const { data, isLoading } = useQuery({
-		queryKey: ['products', params],
+		queryKey: ['products'],
 		queryFn: () => fetchProducts(params),
 		placeholderData: prev => prev, // keepPreviousData (v5 uslub)
 		staleTime: 60_000,
 	})
 
+	const SORT_OPTIONS = [
+		{ value: 'newest', label: 'Yangi' },
+		{ value: 'oldest', label: 'Eski' },
+		{ value: 'best-selling', label: "Ko'p sotilgan" },
+		{ value: 'on-sale', label: 'Chegirmadagi' },
+	]
+
+	const CATEGORY_FILTERS = [
+		{ value: 'all', label: 'Barchasi' },
+		...((categories ?? []).map(cat => ({
+			value: cat.slug,
+			label: cat.title,
+		})) as { value: string; label: string }[]),
+	]
+
 	const products = data?.products ?? []
 	// const meta = data?.meta
 	return (
-		<div className='bg-card rounded-xl shadow-lg overflow-visible text-text'>
-			<div className='p-6 border-b border-border grid grid-cols-2 items-center justify-between'>
-				<h2 className='text-2xl font-bold text-secondary'>
-					Mahsulotlarni boshqarish
-				</h2>
-				{/* filtering sections */}
-				<div className='grid grid-cols-4 gap-x-4 items-center'>
-					<SearchInput
-						className='col-span-2'
-						value={searchQuery}
-						onChange={setSearchQuery}
-					/>
-					<DropdownCategoryBar
-						categories={categoriesPage}
-						selectedCategory={category}
-						onChange={setCategory}
-					/>
-					<DropdownFilterBar
-						filters={filters}
-						selectedFilter={filter}
-						onChange={setFilter}
-					/>
-				</div>
-			</div>
+		<div className='bg-card rounded-xl shadow-lg overflow-visible text-foreground'>
+			{/* filtering sections */}
+			<TableHeaders
+				header='Mahsulotlarni boshqarish'
+				searchQuery={searchQuery}
+				filterOptions={CATEGORY_FILTERS}
+				sortOptions={SORT_OPTIONS}
+				sort={sort}
+				filter={category}
+				onSearchChange={setSearchQuery}
+				onFilterChange={setCategory}
+				onSortChange={setSort}
+			/>
+
 			<div className='overflow-x-auto'>
 				{/* Loading */}
 				{isLoading && <TableSkeleton columns={5} rows={5} />}
 
-				{products && (
+				{!isLoading && products.length > 0 && (
 					<table className='w-full table-fixed'>
 						<thead className='bg-light'>
 							<tr>

@@ -51,3 +51,13 @@ export function formatKoreanPhone(input: string) {
 	// fallback
 	return input
 }
+
+export function formatDate(dateStr: string) {
+	return new Date(dateStr).toLocaleDateString('uz-UZ', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+	})
+}

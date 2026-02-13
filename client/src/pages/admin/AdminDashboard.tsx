@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
-import { mockProducts } from '../../constants'
-import { getCategories } from '../../service/adminApi'
-import { CategoryType, Product } from '../../types'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
+import toast from 'react-hot-toast'
+import { useCategories } from '../../hooks/categoriesQuery'
+import { deleteProduct } from '../../service/adminApi'
+import { Product } from '../../types'
 import AddProductForm from './_components/AddProductForm'
 import AdminHeader from './_components/AdminHeader'
 import AdminTabs, { AdminTabType } from './_components/AdminTabs'
@@ -9,11 +11,10 @@ import DeleteProductModal from './_components/DeleteProductModel'
 import EditProductModal from './_components/EditProductModel'
 import OverviewSection from './_components/OverviewSection'
 import ProductsTable from './_components/ProductsTable'
+import OrdersTable from './_components/ordersTable'
 
 export default function AdminDashboard() {
 	const [activeTab, setActiveTab] = useState<AdminTabType>('overview')
-	const [products, setProducts] = useState<Product[]>(mockProducts)
-	const [categories, setCategories] = useState<CategoryType[]>([])
 
 	// Delete modal state
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -23,14 +24,34 @@ export default function AdminDashboard() {
 	const [showEditModal, setShowEditModal] = useState(false)
 	const [productToEdit, setProductToEdit] = useState<Product | null>(null)
 
-	const handleDelete = (id: string) => {
+	const { data: categories } = useCategories()
+
+	const queryClient = useQueryClient()
+
+	function handleDelete(id: string) {
 		setProductToDelete(id)
 		setShowDeleteModal(true)
 	}
 
+	const onDeleteProduct = useMutation({
+		mutationFn: ({ productId }: { productId: string }) =>
+			deleteProduct(productId),
+
+		onSuccess: res => {
+			// siz aytgandek: 200 bo'lsa qayta chaqirish
+			if (res.status === 200) {
+				toast.success('Mahsulot o`chirildi')
+				// 1) faqat products query ni qayta olib keladi
+				queryClient.invalidateQueries({ queryKey: ['products'] })
+				// yoki aniq shu params bo'yicha:
+				// queryClient.invalidateQueries({ queryKey: ['products', params] })
+			}
+		},
+	})
+
 	const confirmDelete = () => {
 		if (productToDelete) {
-			setProducts(products.filter(p => p._id !== productToDelete))
+			onDeleteProduct.mutate({ productId: productToDelete })
 		}
 		setShowDeleteModal(false)
 		setProductToDelete(null)
@@ -41,16 +62,15 @@ export default function AdminDashboard() {
 		setShowEditModal(true)
 	}
 
-	useEffect(() => {
-		;(async () => {
-			try {
-				const data = await getCategories()
-				if (data) setCategories(data)
-			} catch (e) {
-				console.log(e)
-			}
-		})()
-	}, [])
+	// function handleStatusChange(orderId: string, newStatus: OrderStatus) {
+	// 	setOrders(prev =>
+	// 		prev.map(order =>
+	// 			order._id === orderId
+	// 				? { ...order, status: newStatus, updatedAt: new Date().toISOString() }
+	// 				: order,
+	// 		),
+	// 	)
+	// }
 
 	return (
 		<div className='min-h-screen text-text'>
@@ -62,16 +82,14 @@ export default function AdminDashboard() {
 				{activeTab === 'overview' && <OverviewSection />}
 
 				{activeTab === 'products' && (
-					<ProductsTable
-						products={products}
-						onEdit={handleEdit}
-						onDelete={handleDelete}
-					/>
+					<ProductsTable onEdit={handleEdit} onDelete={handleDelete} />
 				)}
 
 				{activeTab === 'add-product' && (
-					<AddProductForm categories={categories} />
+					<AddProductForm categories={categories ?? []} />
 				)}
+
+				{activeTab === 'orders' && <OrdersTable />}
 			</div>
 
 			{/* Modals */}
@@ -84,6 +102,7 @@ export default function AdminDashboard() {
 			<EditProductModal
 				isOpen={showEditModal}
 				product={productToEdit}
+				categories={categories ?? []}
 				onClose={() => {
 					setShowEditModal(false)
 					setProductToEdit(null)
