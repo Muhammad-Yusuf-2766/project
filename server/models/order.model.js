@@ -33,6 +33,8 @@ const orderSchema = new Schema(
 	{ timestamps: true },
 )
 
+orderSchema.index({ status: 1, 'items.productId': 1 })
+
 const OrderModel = model('Order', orderSchema)
 
 module.exports = OrderModel

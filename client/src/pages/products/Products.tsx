@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
-import { Package } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import CategoryBar from '../../components/CategoryBar'
 import { ProductGridSkeleton } from '../../components/Loader/Loading'
+import { Pagination2 } from '../../components/Pagination'
 import ProductCard from '../../components/ProductCard'
-import SearchInput from '../../components/SearchInput'
+import ShopPageHeader from '../../components/ShopHeader'
+import UndefinedData from '../../components/UndefinedData'
 import { categoriesPage } from '../../constants'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
-import { fetchProducts, Sort } from '../../service/apiProducts'
+import { fetchProducts, SortProducts } from '../../service/apiProducts'
 
 export type SaleFilter = 'all' | 'sale' | 'new' | 'top' | 'newst' | 'oldest'
 
@@ -16,9 +17,9 @@ export default function Products() {
 	const debouncedSearchQuery = useDebouncedValue(searchQuery, 500)
 
 	const [category, setCategory] = useState<string>('all')
-	const [sort] = useState<Sort>('newest')
+	const [sort] = useState<SortProducts>('newest')
 	const [page, setPage] = useState(1)
-	const pageSize = 12
+	const pageSize = 6
 	const [saleFilter, setSaleFilter] = useState<SaleFilter>('all')
 
 	// qaysi param o'zgarsa page 1 bo'lsin (UX)
@@ -45,7 +46,8 @@ export default function Products() {
 	})
 
 	const products = data?.products ?? []
-	const meta = data?.meta
+	const totalProducts = data?.meta?.total ?? 0
+	const totalPages = Math.ceil(totalProducts / pageSize)
 
 	return (
 		<div className='min-h-screen overflow-hidden'>
@@ -70,56 +72,15 @@ export default function Products() {
 
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:text-lg text-base'>
 				<div className='mb-8'>
-					{/* Filter section */}
-					<div className='grid grid-cols-2 max-md:grid-cols-1 gap-4 items-center'>
-						<SearchInput value={searchQuery} onChange={setSearchQuery} />
-
-						<div className='w-full grid grid-cols-4 gap-2'>
-							<button
-								onClick={() => setSaleFilter('all')}
-								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all text-base ${
-									saleFilter === 'all'
-										? 'bg-primary text-white shadow-md'
-										: 'bg-card text-text border border-border hover:bg-light'
-								}`}
-							>
-								Barchasi
-							</button>
-
-							<button
-								onClick={() => setSaleFilter('sale')}
-								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all ${
-									saleFilter === 'sale'
-										? 'bg-primary text-white shadow-md'
-										: 'bg-card text-text border border-border hover:bg-light'
-								}`}
-							>
-								Sale
-							</button>
-
-							<button
-								onClick={() => setSaleFilter('new')}
-								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all ${
-									saleFilter === 'new'
-										? 'bg-primary text-white shadow-md'
-										: 'bg-card text-text border border-border hover:bg-light'
-								}`}
-							>
-								Yangi
-							</button>
-
-							<button
-								onClick={() => setSaleFilter('top')}
-								className={`w-full md:px-5 md:py-3 p-2 rounded-lg transition-all ${
-									saleFilter === 'top'
-										? 'bg-primary text-white shadow-md'
-										: 'bg-card text-text border border-border hover:bg-light'
-								}`}
-							>
-								Top
-							</button>
-						</div>
-					</div>
+					{/* Filter Section */}
+					<ShopPageHeader
+						searchQuery={searchQuery}
+						setSearchQuery={setSearchQuery}
+						saleFilter={saleFilter}
+						setSaleFilter={(value: string) =>
+							setSaleFilter(value as SaleFilter)
+						}
+					/>
 				</div>
 
 				{/* Category & product render section */}
@@ -132,28 +93,25 @@ export default function Products() {
 						/>
 					</div>
 
-					{isLoading && <ProductGridSkeleton count={3} />}
-					{isError && <div>Xatolik yuz berdi</div>}
-
 					<div className='flex-1'>
+						{isLoading && <ProductGridSkeleton count={4} />}
+						{isError && <div>Xatolik yuz berdi</div>}
+
 						<div className='mb-4 flex items-center justify-between'>
 							<p className='text-text-secondary'>
 								Ko'rsatilmoqda:{' '}
-								<span className='font-semibold text-text'>{meta?.total}</span>{' '}
+								<span className='font-semibold text-text'>
+									{data?.meta.total}
+								</span>{' '}
 								mahsulot
 							</p>
 						</div>
 
 						{!isLoading && products.length === 0 ? (
-							<div className='bg-card rounded-lg shadow-md p-12 text-center'>
-								<Package className='w-16 h-16 text-text-muted mx-auto mb-4' />
-								<h3 className='text-xl font-semibold text-text mb-2'>
-									Mahsulot topilmadi
-								</h3>
-								<p className='text-text-secondary'>
-									Qidiruv yoki filtrlarni o'zgartirib ko'ring
-								</p>
-							</div>
+							<UndefinedData
+								header='Mahsulotlar topilmadi.'
+								subHeader='Iltimos admin bilan bog`laning'
+							/>
 						) : (
 							<div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2'>
 								{products.map(product => (
@@ -163,13 +121,26 @@ export default function Products() {
 						)}
 
 						{/* Pagination */}
-						{/* <div className='mt-8 sm:mt-12'>
+						{/* {!isLoading && totalPages > 1 && (
 							<Pagination
-								currentPage={page}
+								header='mahsulotlar'
+								page={page}
 								totalPages={totalPages}
-								onPageChange={setCurrentPage}
+								totalOrders={totalProducts}
+								setPage={setPage}
 							/>
-						</div> */}
+						)} */}
+
+						{/* Pagination */}
+						{!isLoading && totalPages > 1 && (
+							<div className='mt-8 sm:mt-12'>
+								<Pagination2
+									currentPage={page}
+									totalPages={totalPages}
+									onPageChange={setPage}
+								/>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

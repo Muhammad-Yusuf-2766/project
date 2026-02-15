@@ -4,6 +4,8 @@ const uploadProductImages = require('../middlewares/uploadCategoryImage')
 
 const router = require('express').Router()
 
+router.get('/overview', adminController.getAdminOverview)
+router.get('/sales', adminController.getAdminSales)
 router.get('/products', adminController.getProducts)
 router.get('/customers', adminController.getCustomers)
 router.get('/orders', adminController.getOrders)

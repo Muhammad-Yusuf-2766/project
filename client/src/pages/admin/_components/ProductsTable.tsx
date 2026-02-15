@@ -2,11 +2,14 @@ import { useQuery } from '@tanstack/react-query'
 import { Edit, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { TableSkeleton } from '../../../components/Loader/Loading'
+import Pagination from '../../../components/Pagination'
+import UndefinedData from '../../../components/UndefinedData'
 import { useCategories } from '../../../hooks/categoriesQuery'
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
 import { formatPrice } from '../../../lib/helpers'
 import { resolveImageUrl } from '../../../lib/mediaUrl'
-import { fetchProducts, SortProducts } from '../../../service/apiProducts'
+import { fetchProducts } from '../../../service/adminApi'
+import { SortProducts } from '../../../service/apiProducts'
 import { Product } from '../../../types'
 import TableHeaders from './TableHeaders'
 
@@ -25,7 +28,7 @@ export default function ProductsTable({
 	const [category, setCategory] = useState<string>('all')
 	const [sort, setSort] = useState('newest')
 	const [page, setPage] = useState(1)
-	const pageSize = 12
+	const pageSize = 4
 
 	// qaysi param o'zgarsa page 1 bo'lsin (UX)
 	useEffect(() => {
@@ -46,11 +49,14 @@ export default function ProductsTable({
 	const { data: categories } = useCategories()
 
 	const { data, isLoading } = useQuery({
-		queryKey: ['products'],
+		queryKey: ['products', params],
 		queryFn: () => fetchProducts(params),
 		placeholderData: prev => prev, // keepPreviousData (v5 uslub)
 		staleTime: 60_000,
 	})
+
+	const totalOrders = data?.meta?.total ?? 0
+	const totalPages = Math.ceil(totalOrders / pageSize)
 
 	const SORT_OPTIONS = [
 		{ value: 'newest', label: 'Yangi' },
@@ -88,6 +94,10 @@ export default function ProductsTable({
 				{/* Loading */}
 				{isLoading && <TableSkeleton columns={5} rows={5} />}
 
+				{!isLoading && products.length === 0 && (
+					<UndefinedData header='Mahsulotlar topilmadi' />
+				)}
+
 				{!isLoading && products.length > 0 && (
 					<table className='w-full table-fixed'>
 						<thead className='bg-light'>
@@ -103,6 +113,9 @@ export default function ProductsTable({
 								</th>
 								<th className='px-6 py-4 text-left text-sm font-semibold'>
 									Sotuvda
+								</th>
+								<th className='px-6 py-4 text-left text-sm font-semibold'>
+									Sotildi
 								</th>
 								<th className='px-6 py-4 text-left text-sm font-semibold'>
 									O'zgarishlar
@@ -139,6 +152,7 @@ export default function ProductsTable({
 										{formatPrice(product.price)} / {product.unit}
 									</td>
 									<td className='px-6 py-4'>{product.stock}</td>
+									<td className='px-6 py-4'>{product.soldCount}</td>
 									<td className='px-6 py-4'>
 										<div className='flex gap-2'>
 											<button
@@ -161,6 +175,17 @@ export default function ProductsTable({
 					</table>
 				)}
 			</div>
+
+			{/* Pagination */}
+			{!isLoading && totalPages > 1 && (
+				<Pagination
+					header='mahsulotlar'
+					page={page}
+					totalPages={totalPages}
+					totalOrders={totalOrders}
+					setPage={setPage}
+				/>
+			)}
 		</div>
 	)
 }

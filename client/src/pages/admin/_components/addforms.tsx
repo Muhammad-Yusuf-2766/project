@@ -475,6 +475,7 @@ export const CategoryForm = ({ categories }: Props) => {
 						</label>
 						<input
 							type='text'
+							disabled
 							value={categoryForm.slug}
 							onChange={e =>
 								setCategoryForm(prev => ({

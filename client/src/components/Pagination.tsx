@@ -5,19 +5,19 @@ import {
 	ChevronsRight,
 } from 'lucide-react'
 
-interface PaginationProps {
+interface PaginationProps2 {
 	currentPage: number
 	totalPages: number
 	onPageChange: (page: number) => void
 	siblingsCount?: number
 }
 
-export default function Pagination({
+export function Pagination2({
 	currentPage,
 	totalPages,
 	onPageChange,
 	siblingsCount = 1,
-}: PaginationProps) {
+}: PaginationProps2) {
 	const range = (start: number, end: number) => {
 		return Array.from({ length: end - start + 1 }, (_, i) => start + i)
 	}
@@ -135,3 +135,53 @@ export default function Pagination({
 		</div>
 	)
 }
+
+type PaginationProps = {
+	header: string
+	page: number
+	totalPages: number
+	totalOrders: number
+	setPage: (page: number) => void
+}
+
+const Pagination = ({
+	header,
+	page,
+	totalPages,
+	totalOrders,
+	setPage,
+}: PaginationProps) => {
+	return (
+		<div className='flex items-center justify-between px-6 py-4 border-t border-border'>
+			<p className='text-base text-text font-medium'>
+				Jami {header} {totalOrders} ta
+			</p>
+
+			<div className='flex items-center gap-2'>
+				<button
+					onClick={() => setPage(Math.max(1, page - 1))}
+					disabled={page <= 1}
+					className='inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border text-sm hover:bg-light transition-colors disabled:opacity-50 disabled:pointer-events-none'
+				>
+					<ChevronLeft className='h-4 w-4' />
+					<span className='sr-only'>Oldingi sahifa</span>
+				</button>
+
+				<span className='text-sm font-medium min-w-16 text-center'>
+					{page} / {totalPages}
+				</span>
+
+				<button
+					onClick={() => setPage(Math.min(totalPages, page + 1))}
+					disabled={page >= totalPages}
+					className='inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border text-sm hover:bg-light transition-colors disabled:opacity-50 disabled:pointer-events-none'
+				>
+					<ChevronRight className='h-4 w-4' />
+					<span className='sr-only'>Keyingi sahifa</span>
+				</button>
+			</div>
+		</div>
+	)
+}
+
+export default Pagination

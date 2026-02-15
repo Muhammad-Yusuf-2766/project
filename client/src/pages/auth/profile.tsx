@@ -19,6 +19,7 @@ import {
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { formatPrice } from '../../lib/helpers'
 
 interface UserData {
 	fullName: string
@@ -52,10 +53,6 @@ const mockOrders = [
 		items: 5,
 	},
 ]
-
-const formatPrice = (price: number) => {
-	return new Intl.NumberFormat('uz-UZ').format(price) + ' won'
-}
 
 export default function Profile() {
 	const [isEditing, setIsEditing] = useState(false)

@@ -393,6 +393,27 @@ class UserController {
 
 			await userModel.findByIdAndUpdate(userId, { address })
 
+			const products = await productModel.find({
+				_id: { $in: items.map(i => i.productId) },
+			})
+
+			for (const item of items) {
+				const product = products.find(p => p._id.toString() === item.productId)
+				if (!product) {
+					return res.json({
+						failure: `Product with ID ${item.productId} not found`,
+					})
+				}
+				if (product.stock < item.quantity) {
+					return res.json({
+						failure: `Not enough stock for product ${product.title}`,
+					})
+				}
+				product.stock -= item.quantity
+				product.soldCount += item.quantity
+				await product.save()
+			}
+
 			const newOrder = new orderModel({
 				userId,
 				fullName,
@@ -409,7 +430,6 @@ class UserController {
 			return res.json({ status: 200, order: newOrder })
 		} catch (error) {
 			console.log(error)
-
 			next(error)
 		}
 	}

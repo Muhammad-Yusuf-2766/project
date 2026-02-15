@@ -11,6 +11,7 @@ export interface Product {
 	images: string[]
 	stock: number
 	likeCount?: string
+	soldCount: number
 	createdAt?: string
 }
 

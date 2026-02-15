@@ -4,12 +4,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
 	CheckCircle,
 	ChevronDown,
-	ChevronLeft,
-	ChevronRight,
 	Clock,
 	Eye,
 	MapPin,
-	Package,
 	Phone,
 	Truck,
 	X,
@@ -17,6 +14,8 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { TableSkeleton } from '../../../components/Loader/Loading'
+import Pagination from '../../../components/Pagination'
+import UndefinedData from '../../../components/UndefinedData'
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
 import { formatDate, formatPrice } from '../../../lib/helpers'
 import { updateOrderStatus } from '../../../service/adminApi'
@@ -308,7 +307,7 @@ export default function OrdersTable() {
 	const [statusFilter, setStatusFilter] = useState('all')
 	const [sort, setSort] = useState('newest')
 	const [page, setPage] = useState(1)
-	const pageSize = 10
+	const pageSize = 2
 	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
 	// qaysi param o'zgarsa page 1 bo'lsin (UX)
@@ -405,13 +404,7 @@ export default function OrdersTable() {
 					{isLoading && <TableSkeleton columns={6} rows={5} />}
 
 					{!isLoading && orders.length === 0 && (
-						<div className='flex flex-col items-center justify-center py-16 text-muted-foreground'>
-							<Package className='h-12 w-12 mb-3' />
-							<p className='text-lg font-medium'>Buyurtmalar topilmadi</p>
-							<p className='text-sm'>
-								{"Qidiruv yoki filtrni o'zgartirib ko'ring"}
-							</p>
-						</div>
+						<UndefinedData header='Buyurtmalar topilmadi' />
 					)}
 
 					{!isLoading && orders.length > 0 && (
@@ -527,33 +520,14 @@ export default function OrdersTable() {
 				</div>
 
 				{/* Pagination */}
-				{!isLoading && orders.length > pageSize && (
-					<div className='flex items-center justify-between px-6 py-4 border-t border-border'>
-						<p className='text-sm text-muted-foreground'>
-							Jami {orders.length} ta buyurtma
-						</p>
-						<div className='flex items-center gap-2'>
-							<button
-								onClick={() => setPage(p => Math.max(1, p - 1))}
-								disabled={page <= 1}
-								className='inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border text-sm hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:pointer-events-none'
-							>
-								<ChevronLeft className='h-4 w-4' />
-								<span className='sr-only'>Oldingi sahifa</span>
-							</button>
-							<span className='text-sm font-medium min-w-[4rem] text-center'>
-								{page} / {totalPages}
-							</span>
-							<button
-								onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-								disabled={page >= totalPages}
-								className='inline-flex items-center justify-center h-8 w-8 rounded-lg border border-border text-sm hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:pointer-events-none'
-							>
-								<ChevronRight className='h-4 w-4' />
-								<span className='sr-only'>Keyingi sahifa</span>
-							</button>
-						</div>
-					</div>
+				{!isLoading && totalPages > 1 && (
+					<Pagination
+						header='buyurtma'
+						page={page}
+						totalPages={totalPages}
+						totalOrders={totalOrders}
+						setPage={setPage}
+					/>
 				)}
 			</div>
 

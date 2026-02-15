@@ -10,6 +10,7 @@ const productSchema = new Schema(
 		images: [{ type: String }],
 		unit: { type: String, required: true },
 		stock: { type: Number, required: false },
+		soldCount: { type: Number, required: false, default: 0 },
 		likeCount: { type: Number, required: false, default: null },
 	},
 	{ timestamps: true },

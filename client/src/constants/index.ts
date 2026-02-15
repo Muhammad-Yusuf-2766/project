@@ -4,11 +4,8 @@ import {
 	Beef,
 	ChefHat,
 	Clock,
-	DollarSign,
 	Package,
 	Shield,
-	TrendingUp,
-	Users,
 	Wheat,
 } from 'lucide-react'
 import { CategoryType, Order, Product } from '../types'
@@ -272,32 +269,32 @@ export const mockProducts: Product[] = [
 	},
 ]
 
-export const stats = [
-	{
-		label: 'Barcha mahsulotlar',
-		value: '156',
-		icon: Package,
-		color: 'bg-blue-500',
-	},
-	{
-		label: 'Barcha buyurtmalar',
-		value: '42',
-		icon: Users,
-		color: 'bg-emerald-500',
-	},
-	{
-		label: 'Barcha savdo',
-		value: '$24,580',
-		icon: DollarSign,
-		color: 'bg-purple-500',
-	},
-	{
-		label: 'O`sish',
-		value: '+12.5%',
-		icon: TrendingUp,
-		color: 'bg-orange-500',
-	},
-]
+// export const stats = [
+// 	{
+// 		label: 'Barcha mahsulotlar',
+// 		value: '156',
+// 		icon: Package,
+// 		color: 'bg-blue-500',
+// 	},
+// 	{
+// 		label: 'Barcha buyurtmalar',
+// 		value: '42',
+// 		icon: Users,
+// 		color: 'bg-emerald-500',
+// 	},
+// 	{
+// 		label: 'Barcha savdo',
+// 		value: '$24,580',
+// 		icon: DollarSign,
+// 		color: 'bg-purple-500',
+// 	},
+// 	{
+// 		label: 'O`sish',
+// 		value: '+12.5%',
+// 		icon: TrendingUp,
+// 		color: 'bg-orange-500',
+// 	},
+// ]
 
 export const categoriesPage: CategoryType[] = [
 	{ _id: 'all', title: 'Barchasi', slug: 'all', image: '', icon: Package },
