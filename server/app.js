@@ -19,6 +19,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/static', express.static(path.join(process.cwd(), 'static')))
 
 // Routes
+app.use('/health', (req, res) =>
+	res.send('Hello, Welcome to Express health test server'),
+)
 app.use('/api', require('./routes/index.route'))
 
 // Error handling
