@@ -9,7 +9,7 @@ import AdminHeader from './_components/AdminHeader'
 import AdminTabs, { AdminTabType } from './_components/AdminTabs'
 import DeleteProductModal from './_components/DeleteProductModel'
 import EditProductModal from './_components/EditProductModel'
-import OrdersTable from './_components/OrdersTable'
+import OrdersTable from './_components/ordersTable'
 import OverviewSection from './_components/OverviewSection'
 import ProductsTable from './_components/ProductsTable'
 

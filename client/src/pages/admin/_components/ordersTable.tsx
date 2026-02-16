@@ -105,7 +105,7 @@ function StatusChanger({
 			{open && (
 				<>
 					<div className='fixed inset-0 z-40' onClick={() => setOpen(false)} />
-					<ul className='absolute z-50 mt-1 left-0 min-w-[10rem] rounded-lg border border-border bg-card shadow-lg py-1'>
+					<ul className='absolute z-50 mt-1 left-0 min-w-40 rounded-lg border border-border bg-card shadow-lg py-1'>
 						{statuses.map(s => {
 							const c = STATUS_CONFIG[s]
 							const SIcon = c.icon
