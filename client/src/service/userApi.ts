@@ -15,13 +15,8 @@ export async function loginApi(payload: {
 	phone: string
 	password: string
 }): Promise<AuthResponse> {
-	const res = await fetch('http://localhost:3001/api/auth/login', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(payload),
-	})
-	if (!res.ok) throw new Error(await res.text())
-	return res.json()
+	const res = await api.post<AuthResponse>('/api/auth/login', payload)
+	return res.data
 }
 
 export async function registerApi(payload: {
@@ -29,24 +24,13 @@ export async function registerApi(payload: {
 	phone: string
 	password: string
 }): Promise<AuthResponse> {
-	const res = await fetch('http://localhost:3001/api/auth/register', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(payload),
-		// credentials: 'include',
-	})
-	console.log(res)
-	// if (!res.ok) throw new Error(await res.text())
-	const result = res.json()
-	return result
+	const res = await api.post<AuthResponse>('/api/auth/register', payload)
+	return res.data
 }
 
-export async function checkMe(token: string) {
-	const res = await fetch('http://localhost:3001/api/auth/check-me', {
-		headers: { Authorization: `Bearer ${token}` },
-	})
-	if (!res.ok) throw new Error(await res.text())
-	return res.json()
+export async function checkMe() {
+	const res = await api.get('/api/auth/check-me')
+	return res
 }
 
 type GetUserOrders = {
