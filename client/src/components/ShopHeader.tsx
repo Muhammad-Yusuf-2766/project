@@ -1,3 +1,4 @@
+import { SortProducts } from '../service/apiProducts'
 import SearchInput from './SearchInput'
 
 type ButtonProps = {
@@ -24,9 +25,9 @@ const FilterButton = ({ title, onClick, active }: ButtonProps) => {
 
 type ShopPageHeaderProps = {
 	searchQuery: string
-	saleFilter: string
+	saleFilter: SortProducts
 	setSearchQuery: (value: string) => void
-	setSaleFilter: (value: string) => void
+	setSaleFilter: (value: SortProducts) => void
 }
 
 const ShopPageHeader = ({
@@ -49,20 +50,20 @@ const ShopPageHeader = ({
 
 					<FilterButton
 						title='Sale'
-						onClick={() => setSaleFilter('sale')}
-						active={saleFilter === 'sale'}
+						onClick={() => setSaleFilter('on-sale')}
+						active={saleFilter === 'on-sale'}
 					/>
 
 					<FilterButton
 						title='Yangi'
-						onClick={() => setSaleFilter('new')}
-						active={saleFilter === 'new'}
+						onClick={() => setSaleFilter('newest')}
+						active={saleFilter === 'newest'}
 					/>
 
 					<FilterButton
 						title='Top'
-						onClick={() => setSaleFilter('top')}
-						active={saleFilter === 'top'}
+						onClick={() => setSaleFilter('best-selling')}
+						active={saleFilter === 'best-selling'}
 					/>
 				</div>
 			</div>

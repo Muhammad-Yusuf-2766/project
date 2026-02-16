@@ -2,8 +2,10 @@ const orderModel = require('../models/order.model')
 const productModel = require('../models/product.model')
 const userModel = require('../models/user.model')
 const bcrypt = require('bcrypt')
-const { getCustomer } = require('../lib/customer')
+// const { getCustomer } = require('../lib/customer')
 const categoryModel = require('../models/category.model')
+const OrderModel = require('../models/order.model')
+const sendOrderToAdmin = require('../services/telegram.service')
 
 class UserController {
 	// [GET] /user/products
@@ -27,8 +29,13 @@ class UserController {
 			}
 
 			let sortOptions = { createdAt: -1 }
-			if (sort === 'newest') sortOptions = { createdAt: -1 }
-			else if (sort === 'oldest') sortOptions = { createdAt: 1 }
+			if (sort === 'all') sortOptions = { createdAt: 1 }
+			else if (sort === 'newest') sortOptions = { createdAt: -1 }
+			else if (sort === 'best-selling') sortOptions = { soldCount: -1 }
+			else if (sort === 'on-sale') {
+				query.originalPrice = { $ne: null }
+				query.$expr = { $gt: ['$originalPrice', '$price'] }
+			}
 
 			const products = await productModel
 				.find(query)
@@ -124,11 +131,13 @@ class UserController {
 		}
 	}
 	// [GET] /user/profile/:id
-	async getProfile(req, res, next) {
+	async getUserOrders(req, res, next) {
 		try {
-			console.log('Check me:::: ', req.params.id)
-			const user = await userModel.findById(req.params.id).select('-password')
-			return res.json({ user })
+			const id = req.user._id
+			const orders = await OrderModel.find({ userId: id }).sort({
+				createdAt: -1,
+			})
+			return res.json({ orders })
 		} catch (error) {
 			next(error)
 		}
@@ -427,6 +436,13 @@ class UserController {
 			})
 
 			await newOrder.save()
+
+			// Telegram xabar (order fail bo‘lmasin deb try/catch)
+			try {
+				await sendOrderToAdmin(newOrder, products)
+			} catch (e) {
+				console.log('Telegram send error:', e)
+			}
 			return res.json({ status: 200, order: newOrder })
 		} catch (error) {
 			console.log(error)

@@ -57,7 +57,7 @@ export default function Cart() {
 
 			toast.success('Buyurtma muvaffaqiyatli yuborildi!')
 			clear()
-			navigate('/orders')
+			navigate('/profile')
 		} catch (error) {
 			toast.error('Buyurtma yuborishda xatolik yuz berdi')
 		} finally {

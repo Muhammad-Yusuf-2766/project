@@ -307,7 +307,7 @@ export default function OrdersTable() {
 	const [statusFilter, setStatusFilter] = useState('all')
 	const [sort, setSort] = useState('newest')
 	const [page, setPage] = useState(1)
-	const pageSize = 2
+	const pageSize = 15
 	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
 	// qaysi param o'zgarsa page 1 bo'lsin (UX)

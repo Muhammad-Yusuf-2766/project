@@ -2,7 +2,7 @@ import { CategoryType, Order, Product } from '../types'
 import { api } from './axiosinctance'
 
 // api/products.ts
-export type SortProducts = 'newest' | 'oldest' | 'best-selling' | 'on-sale'
+export type SortProducts = 'all' | 'newest' | 'best-selling' | 'on-sale'
 export type SortOrders = 'newest' | 'oldest' | 'highest' | 'lowest'
 export type Statusorders = 'all' | 'pending' | 'sending' | 'completed'
 export type Category = 'all' | string

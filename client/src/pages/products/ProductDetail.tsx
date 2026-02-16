@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { CartItemSkeleton } from '../../components/Loader/Loading'
+import { ProductCardSkeleton } from '../../components/Loader/Loading'
 import { useCart } from '../../context/CartContext'
 import { useFavorites } from '../../context/FavoritesContext'
 import { useToggleLike } from '../../hooks/useToggleLike'
@@ -43,6 +43,34 @@ export default function ProductDetail() {
 		placeholderData: prev => prev, // keepPreviousData (v5 uslub)
 		staleTime: 60_000,
 	})
+
+	if (isLoading)
+		return (
+			<div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
+				<ProductCardSkeleton key={1} />
+			</div>
+		)
+
+	if (!id || error)
+		return (
+			<div className='bg-card rounded-2xl shadow-sm p-12 text-center'>
+				<div className='w-24 h-24 bg-light rounded-full flex items-center justify-center mx-auto mb-6'>
+					<ShoppingBag className='w-12 h-12 text-text-muted' />
+				</div>
+				<h2 className='text-2xl font-bold text-red-500 mb-2'>Xatolik</h2>
+				<p className='text-text-muted mb-8 max-w-md mx-auto'>
+					Mahsulotni topishda hatolik yuz berdi. Iltimos keyinroq urinib
+					ko'ring. Tez orada xatolik tuzatiladi.
+				</p>
+				<Link
+					to='/products'
+					className='inline-flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition-colors shadow-lg hover:shadow-xl'
+				>
+					<ShoppingBag className='w-5 h-5' />
+					Orqaga
+				</Link>
+			</div>
+		)
 
 	if (!product)
 		return (
@@ -130,7 +158,7 @@ export default function ProductDetail() {
 					</nav>
 				</div>
 
-				{isLoading && <CartItemSkeleton />}
+				{/* {isLoading && <ProductCardSkeleton key={1} />} */}
 
 				{product && (
 					<div className='grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12'>

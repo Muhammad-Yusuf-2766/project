@@ -1,12 +1,10 @@
+import { useQuery } from '@tanstack/react-query'
 import {
-	Camera,
 	ChevronRight,
-	CreditCard,
 	Edit2,
 	Heart,
 	History,
 	LogOut,
-	Mail,
 	MapPin,
 	Package,
 	Phone,
@@ -14,12 +12,21 @@ import {
 	Settings,
 	ShoppingBag,
 	User,
+	UserCheck,
 	X,
 } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import {
+	ProductGridSkeleton,
+	TableSkeleton,
+} from '../../components/Loader/Loading'
 import { useAuth } from '../../context/AuthContext'
-import { formatPrice } from '../../lib/helpers'
+import { useFavorites } from '../../context/FavoritesContext'
+import { useToggleLike } from '../../hooks/useToggleLike'
+import { formatDate, formatPrice } from '../../lib/helpers'
+import { resolveImageUrl } from '../../lib/mediaUrl'
+import { fetchUserFavorites, fetchUserOrders } from '../../service/userApi'
 
 interface UserData {
 	fullName: string
@@ -30,33 +37,11 @@ interface UserData {
 	avatar: string
 }
 
-const mockOrders = [
-	{
-		id: 'ORD-001',
-		date: '2024-01-15',
-		status: 'Yetkazildi',
-		total: 185000,
-		items: 3,
-	},
-	{
-		id: 'ORD-002',
-		date: '2024-01-10',
-		status: 'Yetkazilmoqda',
-		total: 92000,
-		items: 2,
-	},
-	{
-		id: 'ORD-003',
-		date: '2024-01-05',
-		status: 'Yetkazildi',
-		total: 245000,
-		items: 5,
-	},
-]
-
 export default function Profile() {
 	const [isEditing, setIsEditing] = useState(false)
 	const { user, logout } = useAuth()
+	const { mutateAsync: toggleLikeAsync } = useToggleLike()
+	const { isLiked } = useFavorites()
 
 	const [activeTab, setActiveTab] = useState<
 		'profile' | 'orders' | 'favorites' | 'settings'
@@ -91,11 +76,11 @@ export default function Profile() {
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case 'Yetkazildi':
+			case 'completed':
 				return 'bg-green-100 text-green-700'
-			case 'Yetkazilmoqda':
+			case 'sending':
 				return 'bg-blue-100 text-blue-700'
-			case 'Bekor qilindi':
+			case 'cancelled':
 				return 'bg-red-100 text-red-700'
 			default:
 				return 'bg-gray-100 text-gray-700'
@@ -107,9 +92,43 @@ export default function Profile() {
 		window.location.replace('/')
 	}
 
+	const { data: ordersData, isLoading } = useQuery({
+		queryKey: ['user-orders', user?._id],
+		queryFn: async () => fetchUserOrders(),
+		enabled: !!user,
+	})
+
+	const {
+		data: favoritesData,
+		isLoading: loadingFavorites,
+		refetch: refetchFavorites,
+	} = useQuery({
+		queryKey: ['user-favorites', user?._id],
+		queryFn: async () => fetchUserFavorites(),
+		enabled: !!user,
+	})
+
+	const handelLikle = async (
+		e: React.MouseEvent<HTMLButtonElement>,
+		productId: string,
+	) => {
+		e.preventDefault()
+		e.stopPropagation()
+
+		await toggleLikeAsync({
+			productId,
+			prevLiked: isLiked(productId),
+		})
+
+		await refetchFavorites()
+	}
+
+	const orders = ordersData?.orders || []
+	const favorites = favoritesData?.products || []
+
 	return (
 		<div className='min-h-screen py-8'>
-			<div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
+			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				{/* Header */}
 				<div className='mb-8'>
 					<h1 className='text-3xl font-bold text-text'>Mening hisobim</h1>
@@ -125,19 +144,15 @@ export default function Profile() {
 							{/* Avatar */}
 							<div className='flex flex-col items-center mb-6'>
 								<div className='relative'>
-									<img
-										src={userData.avatar || '/placeholder.svg'}
-										alt={user?.fullName}
-										className='w-24 h-24 rounded-full object-cover border-4 border-primary/20'
-									/>
-									<button className='absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors shadow-lg'>
+									<User className='w-24 h-24 rounded-full object-cover border-4 border-primary/20' />
+									{/* <button className='absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors shadow-lg'>
 										<Camera className='w-4 h-4' />
-									</button>
+									</button> */}
 								</div>
-								<h2 className='mt-4 text-xl font-semibold text-text'>
-									{userData.fullName}
+								<h2 className='mt-2 text-base font-medium text-center text-text'>
+									{user?.fullName && user.fullName}
 								</h2>
-								<p className='text-text-muted text-sm'>{userData.email}</p>
+								{/* <p className='text-text-muted text-sm'>{user?.phone}</p> */}
 							</div>
 
 							{/* Navigation */}
@@ -173,7 +188,7 @@ export default function Profile() {
 					</div>
 
 					{/* Main Content */}
-					<div className='lg:col-span-3'>
+					<div className='lg:col-span-3 overflow-x-hidden'>
 						{/* Profile Tab */}
 						{activeTab === 'profile' && (
 							<div className='bg-card rounded-2xl shadow-md p-6 lg:p-8'>
@@ -210,7 +225,7 @@ export default function Profile() {
 								</div>
 
 								<div className='grid md:grid-cols-2 gap-6'>
-									<div>
+									<div className='col-span-2'>
 										<label className='block text-sm font-medium text-text mb-2'>
 											To'liq ism
 										</label>
@@ -218,34 +233,14 @@ export default function Profile() {
 											<input
 												type='text'
 												name='fullName'
-												value={userData.fullName}
+												value={user?.fullName}
 												onChange={handleChange}
 												className='w-full px-4 py-3 rounded-lg border border-border bg-light text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors'
 											/>
 										) : (
 											<div className='flex items-center gap-3 px-4 py-3 bg-light rounded-lg'>
 												<User className='w-5 h-5 text-text-muted' />
-												<span className='text-text'>{userData.fullName}</span>
-											</div>
-										)}
-									</div>
-
-									<div>
-										<label className='block text-sm font-medium text-text mb-2'>
-											Email manzil
-										</label>
-										{isEditing ? (
-											<input
-												type='email'
-												name='email'
-												value={userData.email}
-												onChange={handleChange}
-												className='w-full px-4 py-3 rounded-lg border border-border bg-light text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors'
-											/>
-										) : (
-											<div className='flex items-center gap-3 px-4 py-3 bg-light rounded-lg'>
-												<Mail className='w-5 h-5 text-text-muted' />
-												<span className='text-text'>{userData.email}</span>
+												<span className='text-text'>{user?.fullName}</span>
 											</div>
 										)}
 									</div>
@@ -272,20 +267,24 @@ export default function Profile() {
 
 									<div>
 										<label className='block text-sm font-medium text-text mb-2'>
-											Shahar
+											Role
 										</label>
 										{isEditing ? (
 											<input
 												type='text'
-												name='city'
-												value={userData.city}
+												name='role'
+												value={user?.role}
 												onChange={handleChange}
 												className='w-full px-4 py-3 rounded-lg border border-border bg-light text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors'
 											/>
 										) : (
 											<div className='flex items-center gap-3 px-4 py-3 bg-light rounded-lg'>
-												<MapPin className='w-5 h-5 text-text-muted' />
-												<span className='text-text'>{userData.city}</span>
+												<UserCheck className='w-5 h-5 text-text-muted' />
+												<span className='text-text'>
+													{user?.role === 'admin'
+														? 'Administrator'
+														: 'Foydalanuvchi'}
+												</span>
 											</div>
 										)}
 									</div>
@@ -298,157 +297,187 @@ export default function Profile() {
 											<input
 												type='text'
 												name='address'
-												value={userData.address}
+												value={user?.address}
 												onChange={handleChange}
 												className='w-full px-4 py-3 rounded-lg border border-border bg-light text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors'
 											/>
 										) : (
 											<div className='flex items-center gap-3 px-4 py-3 bg-light rounded-lg'>
 												<MapPin className='w-5 h-5 text-text-muted' />
-												<span className='text-text'>{userData.address}</span>
+												<span className='text-text'>{user?.address}</span>
 											</div>
 										)}
 									</div>
 								</div>
 
 								{/* Quick Stats */}
-								<div className='grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-border'>
+								<div className='grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-border'>
 									<div className='text-center p-4 bg-light rounded-xl'>
 										<Package className='w-6 h-6 text-primary mx-auto mb-2' />
-										<div className='text-2xl font-bold text-text'>12</div>
+										<div className='text-2xl font-bold text-text'>
+											{orders?.length || 0}
+										</div>
 										<div className='text-text-muted text-sm'>Buyurtmalar</div>
 									</div>
 									<div className='text-center p-4 bg-light rounded-xl'>
 										<Heart className='w-6 h-6 text-red-500 mx-auto mb-2' />
-										<div className='text-2xl font-bold text-text'>8</div>
-										<div className='text-text-muted text-sm'>Sevimlilar</div>
-									</div>
-									<div className='text-center p-4 bg-light rounded-xl'>
-										<CreditCard className='w-6 h-6 text-secondary mx-auto mb-2' />
-										<div className='text-2xl font-bold text-text'>2</div>
-										<div className='text-text-muted text-sm'>
-											To'lov usullari
+										<div className='text-2xl font-bold text-text'>
+											{user?.favorites?.length || 0}
 										</div>
+										<div className='text-text-muted text-sm'>Sevimlilar</div>
 									</div>
 								</div>
 							</div>
 						)}
 
 						{/* Orders Tab */}
-						{activeTab === 'orders' && (
-							<div className='bg-card rounded-2xl shadow-md p-6 lg:p-8'>
-								<div className='flex items-center justify-between mb-6'>
-									<h2 className='text-2xl font-bold text-text'>
-										Buyurtmalar tarixi
-									</h2>
-									<Link
-										to='/products'
-										className='flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all'
-									>
-										Xarid qilish
-										<ShoppingBag className='w-5 h-5' />
-									</Link>
-								</div>
-
-								<div className='space-y-4'>
-									{mockOrders.map(order => (
-										<div
-											key={order.id}
-											className='flex items-center justify-between p-4 bg-light rounded-xl hover:shadow-md transition-shadow cursor-pointer'
-										>
-											<div className='flex items-center gap-4'>
-												<div className='p-3 bg-primary/10 rounded-lg'>
-													<Package className='w-6 h-6 text-primary' />
-												</div>
-												<div>
-													<div className='font-semibold text-text'>
-														{order.id}
-													</div>
-													<div className='text-text-muted text-sm'>
-														{order.date} • {order.items} ta mahsulot
-													</div>
-												</div>
-											</div>
-											<div className='flex items-center gap-4'>
-												<div className='text-right'>
-													<div className='font-semibold text-text'>
-														{formatPrice(order.total)}
-													</div>
-													<span
-														className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-															order.status,
-														)}`}
-													>
-														{order.status}
-													</span>
-												</div>
-												<ChevronRight className='w-5 h-5 text-text-muted' />
-											</div>
-										</div>
-									))}
-								</div>
-
-								{mockOrders.length === 0 && (
-									<div className='text-center py-12'>
-										<History className='w-16 h-16 text-text-muted mx-auto mb-4' />
-										<h3 className='text-xl font-semibold text-text mb-2'>
-											Buyurtmalar yo'q
-										</h3>
-										<p className='text-text-muted mb-6'>
-											Siz hali hech qanday buyurtma bermadingiz
-										</p>
+						<div>
+							{isLoading && activeTab === 'orders' && (
+								<TableSkeleton rows={5} columns={1} />
+							)}
+							{!isLoading && activeTab === 'orders' && (
+								<div className='bg-card rounded-2xl shadow-md p-6 lg:p-8'>
+									<div className='flex items-center justify-between mb-6'>
+										<h2 className='text-2xl font-bold text-text'>
+											Buyurtmalar tarixi
+										</h2>
 										<Link
 											to='/products'
-											className='inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors'
+											className='flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all'
 										>
+											Xarid qilish
 											<ShoppingBag className='w-5 h-5' />
-											Xarid qilishni boshlash
 										</Link>
 									</div>
-								)}
-							</div>
-						)}
+
+									<div>
+										{!isLoading && orders.length <= 0 && (
+											<div className='text-center py-12'>
+												<History className='w-16 h-16 text-text-muted mx-auto mb-4' />
+												<h3 className='text-xl font-semibold text-text mb-2'>
+													Buyurtmalar yo'q
+												</h3>
+												<p className='text-text-muted mb-6'>
+													Siz hali hech qanday buyurtma bermadingiz
+												</p>
+												<Link
+													to='/products'
+													className='inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors'
+												>
+													<ShoppingBag className='w-5 h-5' />
+													Xarid qilishni boshlash
+												</Link>
+											</div>
+										)}
+
+										{orders?.map(order => (
+											<div
+												key={order._id}
+												className='flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-light rounded-xl hover:border-primary hover:border cursor-pointer mt-1 gap-3 sm:gap-4'
+											>
+												<div className='flex items-center gap-3 sm:gap-4 w-full sm:w-auto'>
+													<div className='p-2 sm:p-3 bg-primary/10 rounded-lg shrink-0'>
+														<Package className='w-5 h-5 sm:w-6 sm:h-6 text-primary' />
+													</div>
+													<div className='min-w-0 flex-1'>
+														<div className='font-semibold text-text text-sm sm:text-base truncate'>
+															{order.items.length > 0
+																? order.items.map(item => item.title).join(', ')
+																: 'Buyurtma'}{' '}
+														</div>
+														<div className='text-text-muted text-xs sm:text-sm'>
+															{formatDate(order.createdAt)} •{' '}
+															{order.items.length} ta mahsulot
+														</div>
+													</div>
+												</div>
+
+												<div className='flex items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full sm:w-auto'>
+													<div className='text-left sm:text-right'>
+														<div className='font-semibold text-text text-sm sm:text-base'>
+															{formatPrice(order.totalPrice)}
+														</div>
+														<span
+															className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(
+																order.status,
+															)}`}
+														>
+															{order.status}
+														</span>
+													</div>
+													<ChevronRight className='w-5 h-5 text-text-muted flex-shrink-0' />
+												</div>
+											</div>
+										))}
+									</div>
+								</div>
+							)}
+						</div>
 
 						{/* Favorites Tab */}
-						{activeTab === 'favorites' && (
-							<div className='bg-card rounded-2xl shadow-md p-6 lg:p-8'>
-								<h2 className='text-2xl font-bold text-text mb-6'>
-									Sevimli mahsulotlar
-								</h2>
+						<div>
+							{loadingFavorites && activeTab === 'favorites' && (
+								<ProductGridSkeleton />
+							)}
+							{!loadingFavorites && activeTab === 'favorites' && (
+								<div className='bg-card rounded-2xl shadow-md p-6 lg:p-8'>
+									<h2 className='text-2xl font-bold text-text mb-6'>
+										Sevimli mahsulotlar
+									</h2>
 
-								<div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-									{[1, 2, 3, 4].map(item => (
-										<div
-											key={item}
-											className='bg-light rounded-xl overflow-hidden hover:shadow-md transition-shadow'
-										>
-											<div className='relative h-40'>
-												<img
-													src={`https://images.pexels.com/photos/${
-														[1639557, 618775, 616354, 1510684][item - 1]
-													}/pexels-photo-${
-														[1639557, 618775, 616354, 1510684][item - 1]
-													}.jpeg?auto=compress&cs=tinysrgb&w=400`}
-													alt='Product'
-													className='w-full h-full object-cover'
-												/>
-												<button className='absolute top-2 right-2 p-2 bg-white rounded-full text-red-500 hover:bg-red-50 transition-colors'>
-													<Heart className='w-4 h-4 fill-current' />
-												</button>
-											</div>
-											<div className='p-4'>
-												<h3 className='font-semibold text-text mb-1'>
-													Premium Beef Steak
-												</h3>
-												<p className='text-primary font-bold'>
-													{formatPrice(89000)}
-												</p>
-											</div>
+									{!loadingFavorites && favorites.length <= 0 ? (
+										<div className='text-center py-12'>
+											<Heart className='w-16 h-16 text-red-500 mx-auto mb-4' />
+											<h3 className='text-xl font-semibold text-text mb-2'>
+												Sevimlilar bo'sh
+											</h3>
+											<p className='text-text-muted mb-6'>
+												Siz hali hech qanday mahsulotni sevimlilarga
+												qo'shmadingiz
+											</p>
+											<Link
+												to='/products'
+												className='inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors'
+											>
+												<ShoppingBag className='w-5 h-5' />
+												Sevimlilarni to'ldirish
+											</Link>
 										</div>
-									))}
+									) : null}
+
+									<div className='grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4'>
+										{favorites?.map(item => (
+											<div
+												key={item._id}
+												className='bg-light rounded-xl overflow-hidden shadow-md hover:shadow-lg  cursor-pointer hover:scale-105 transition-all ease'
+											>
+												<div className='relative h-32 sm:h-40'>
+													<img
+														src={resolveImageUrl(item.images[0])}
+														alt='Product'
+														className='w-full h-full object-cover'
+													/>
+													<button
+														onClick={e => handelLikle(e, item._id)}
+														className='absolute top-1.5 right-1.5 sm:top-2 sm:right-2 p-1.5 sm:p-2 bg-white rounded-full text-red-500 hover:bg-red-50 transition-colors'
+													>
+														<Heart className='w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current' />
+													</button>
+												</div>
+												<div className='p-2.5 sm:p-4'>
+													<h3 className='font-semibold text-text mb-1 text-xs sm:text-sm line-clamp-2'>
+														{item.title}
+													</h3>
+													<p className='text-primary font-bold text-sm sm:text-base'>
+														{formatPrice(item.price)}
+													</p>
+												</div>
+											</div>
+										))}
+									</div>
 								</div>
-							</div>
-						)}
+							)}
+						</div>
 
 						{/* Settings Tab */}
 						{activeTab === 'settings' && (

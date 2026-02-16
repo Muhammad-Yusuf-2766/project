@@ -1,5 +1,5 @@
 import { AuthUser } from '../lib/authstorage'
-import { Product } from '../types'
+import { Order, Product } from '../types'
 import { api } from './axiosinctance'
 
 export type AuthResponse = {
@@ -47,6 +47,22 @@ export async function checkMe(token: string) {
 	})
 	if (!res.ok) throw new Error(await res.text())
 	return res.json()
+}
+
+type GetUserOrders = {
+	orders: Order[]
+}
+export async function fetchUserOrders(): Promise<GetUserOrders> {
+	const res = await api.get('/api/user/orders')
+	return res.data
+}
+
+type GetUserFavorites = {
+	products: Product[]
+}
+export async function fetchUserFavorites(): Promise<GetUserFavorites> {
+	const res = await api.get('/api/user/favorites')
+	return res.data
 }
 
 export const getProducts = () =>

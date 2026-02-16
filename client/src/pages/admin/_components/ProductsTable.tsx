@@ -28,7 +28,7 @@ export default function ProductsTable({
 	const [category, setCategory] = useState<string>('all')
 	const [sort, setSort] = useState('newest')
 	const [page, setPage] = useState(1)
-	const pageSize = 4
+	const pageSize = 15
 
 	// qaysi param o'zgarsa page 1 bo'lsin (UX)
 	useEffect(() => {
@@ -145,7 +145,7 @@ export default function ProductsTable({
 
 									<td className='px-6 py-4'>
 										<span className='px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium'>
-											{product.category}
+											{product.category.slice(0, 12)}
 										</span>
 									</td>
 									<td className='px-6 py-4 font-semibold'>

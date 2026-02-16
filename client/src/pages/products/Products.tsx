@@ -15,12 +15,10 @@ export type SaleFilter = 'all' | 'sale' | 'new' | 'top' | 'newst' | 'oldest'
 export default function Products() {
 	const [searchQuery, setSearchQuery] = useState('')
 	const debouncedSearchQuery = useDebouncedValue(searchQuery, 500)
-
 	const [category, setCategory] = useState<string>('all')
-	const [sort] = useState<SortProducts>('newest')
+	const [sort, setSort] = useState<SortProducts>('all')
 	const [page, setPage] = useState(1)
-	const pageSize = 6
-	const [saleFilter, setSaleFilter] = useState<SaleFilter>('all')
+	const pageSize = 20
 
 	// qaysi param o'zgarsa page 1 bo'lsin (UX)
 	useEffect(() => {
@@ -50,7 +48,7 @@ export default function Products() {
 	const totalPages = Math.ceil(totalProducts / pageSize)
 
 	return (
-		<div className='min-h-screen overflow-hidden'>
+		<div className='min-h-screen overflow-x-hidden'>
 			<div
 				className='relative text-white py-16 sm:py-24'
 				style={{
@@ -76,16 +74,14 @@ export default function Products() {
 					<ShopPageHeader
 						searchQuery={searchQuery}
 						setSearchQuery={setSearchQuery}
-						saleFilter={saleFilter}
-						setSaleFilter={(value: string) =>
-							setSaleFilter(value as SaleFilter)
-						}
+						saleFilter={sort}
+						setSaleFilter={(value: string) => setSort(value as SortProducts)}
 					/>
 				</div>
 
 				{/* Category & product render section */}
 				<div className='flex flex-col lg:flex-row gap-8'>
-					<div className='lg:w-64 shrink-0'>
+					<div className='lg:w-64 shrink-0 '>
 						<CategoryBar
 							categories={categoriesPage}
 							selectedCategory={category}

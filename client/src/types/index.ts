@@ -10,7 +10,7 @@ export interface Product {
 	description: string
 	images: string[]
 	stock: number
-	likeCount?: string
+	likeCount?: number
 	soldCount: number
 	createdAt?: string
 }

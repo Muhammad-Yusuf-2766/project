@@ -40,7 +40,6 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 	}
 
 	useEffect(() => {
-		console.log('likedIdsState:', likedIdsState)
 		if (user?._id) {
 			const ids = (user.favorites ?? []).map((x: string) =>
 				typeof x === 'string' ? x : String(x),

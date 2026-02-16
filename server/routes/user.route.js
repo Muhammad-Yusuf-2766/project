@@ -8,10 +8,10 @@ router.get('/product/:id', userController.getProduct)
 router.get('/categories', userController.getCategories)
 router.get('/home', userController.getHomeData)
 
-router.get('/profile/:id', userController.getProfile)
-router.get('/orders', userMiddleware, userController.getOrders)
+router.get('/orders', userMiddleware, userController.getUserOrders)
+// router.get('/orders', userMiddleware, userController.getOrders)
 router.get('/transactions', userMiddleware, userController.getTransactions)
-router.get('/favourites', userMiddleware, userController.getFavourites)
+router.get('/favorites', userMiddleware, userController.getFavourites)
 router.get('/statistics', userMiddleware, userController.getStatistics)
 
 router.post('/products/:id/like', userMiddleware, userController.addFavorite)

@@ -9,9 +9,9 @@ import AdminHeader from './_components/AdminHeader'
 import AdminTabs, { AdminTabType } from './_components/AdminTabs'
 import DeleteProductModal from './_components/DeleteProductModel'
 import EditProductModal from './_components/EditProductModel'
+import OrdersTable from './_components/OrdersTable'
 import OverviewSection from './_components/OverviewSection'
 import ProductsTable from './_components/ProductsTable'
-import OrdersTable from './_components/ordersTable'
 
 export default function AdminDashboard() {
 	const [activeTab, setActiveTab] = useState<AdminTabType>('overview')
@@ -61,16 +61,6 @@ export default function AdminDashboard() {
 		setProductToEdit(product)
 		setShowEditModal(true)
 	}
-
-	// function handleStatusChange(orderId: string, newStatus: OrderStatus) {
-	// 	setOrders(prev =>
-	// 		prev.map(order =>
-	// 			order._id === orderId
-	// 				? { ...order, status: newStatus, updatedAt: new Date().toISOString() }
-	// 				: order,
-	// 		),
-	// 	)
-	// }
 
 	return (
 		<div className='min-h-screen text-text'>
