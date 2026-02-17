@@ -16,7 +16,9 @@ const CategoryBar = ({ categories, selectedCategory, onChange }: Props) => {
 		<div className='bg-card rounded-lg shadow-md md:p-6 p-3 sticky top-24'>
 			<div className='flex items-center mb-4'>
 				<Filter className='w-5 h-5 mr-2 text-primary' />
-				<h2 className='text-lg font-semibold text-text'>Kategoriyalar</h2>
+				<h2 className='md:text-lg text-base font-semibold text-text'>
+					Kategoriyalar
+				</h2>
 			</div>
 
 			{/* md dan kichik: dropdown menu (button + panel) */}
@@ -25,7 +27,7 @@ const CategoryBar = ({ categories, selectedCategory, onChange }: Props) => {
 					<summary className='list-none flex items-center justify-between w-full px-4 py-2 rounded-lg border-border bg-primary text-light cursor-pointer'>
 						<div className='flex items-center gap-x-2'>
 							<Icon className='w-5 h-5' />
-							<span className='font-medium'>
+							<span className='font-medium text-sm'>
 								{categories.find(c => c.slug === selectedCategory)?.title ??
 									'Barchasi'}
 							</span>
@@ -67,7 +69,7 @@ const CategoryBar = ({ categories, selectedCategory, onChange }: Props) => {
 									}`}
 								>
 									<Icon className='w-5 h-5 mr-3' />
-									<span className='font-medium'>{category.title}</span>
+									<span className='font-medium text-sm'>{category.title}</span>
 								</button>
 							)
 						})}

@@ -9,6 +9,7 @@ export type CartItem = {
 
 const GUEST_KEY = 'cart:guest'
 const userKey = (userId: string) => `cart:user:${userId}`
+
 export const getKey = (userId?: string) =>
 	userId ? userKey(userId) : GUEST_KEY
 
@@ -20,6 +21,7 @@ export function readLS(key: string): CartItem[] {
 		return []
 	}
 }
+
 export function writeLS(key: string, items: CartItem[]) {
 	localStorage.setItem(key, JSON.stringify(items))
 }
@@ -32,6 +34,7 @@ function readKey(key: string): CartItem[] {
 		return []
 	}
 }
+
 function writeKey(key: string, items: CartItem[]) {
 	localStorage.setItem(key, JSON.stringify(items))
 }
@@ -50,8 +53,16 @@ function mergeByProductId(a: CartItem[], b: CartItem[]) {
 }
 
 export function migrateGuestCartToUser(userId: string) {
+	const raw = localStorage.getItem(GUEST_KEY)
+	if (!raw) return // umuman yo‘q bo‘lsa chiqamiz
+
 	const guestItems = readKey(GUEST_KEY)
-	if (guestItems.length === 0) return
+
+	// bo‘sh bo‘lsa ham guest key'ni o‘chirib tashlaymiz
+	if (guestItems.length === 0) {
+		localStorage.removeItem(GUEST_KEY)
+		return
+	}
 
 	const uKey = userKey(userId)
 	const userItems = readKey(uKey)
@@ -60,4 +71,16 @@ export function migrateGuestCartToUser(userId: string) {
 
 	writeKey(uKey, merged)
 	localStorage.removeItem(GUEST_KEY)
+}
+
+export function migrateUserCartToGuest(userId: string) {
+	const uKey = userKey(userId) // "cart:user:<id>"
+	const userItems = readKey(uKey)
+
+	const guestItems = readKey(GUEST_KEY)
+
+	const merged = mergeByProductId(guestItems, userItems) // yoki (userItems, guestItems) farqi sizning merge logikangizga bog‘liq
+
+	writeKey(GUEST_KEY, merged)
+	localStorage.removeItem(uKey)
 }

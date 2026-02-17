@@ -1,13 +1,15 @@
 import { Eye, EyeOff, ShoppingBag, UserPlus } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { registerApi } from '../../service/userApi'
 
 export default function Register() {
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+	const navigate = useNavigate()
+
 	const [formData, setFormData] = useState({
 		fullName: '',
 		phone: '',
@@ -36,6 +38,7 @@ export default function Register() {
 		}
 		setAuthFromResponse(res)
 		toast.success('Ro`yxatdan o`tdingiz!')
+		navigate('/')
 	}
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

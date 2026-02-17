@@ -179,7 +179,7 @@ export default function ProductDetail() {
 									</div>
 								)}
 								<button
-									disabled={!ready || isPending}
+									disabled={isPending}
 									onClick={e => {
 										e.preventDefault()
 										e.stopPropagation()

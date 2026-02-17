@@ -12,7 +12,7 @@ const FilterButton = ({ title, onClick, active }: ButtonProps) => {
 		<button
 			type='button'
 			onClick={onClick}
-			className={`w-full items-center px-3 py-3 text-base border border-border rounded-lg ring-1 ring-text-muted font-semibold ${
+			className={`w-full items-center px-3 md:py-3 py-1.5 md:text-base text-sm border border-border rounded-lg ring-1 ring-text-muted font-semibold ${
 				active
 					? 'bg-primary text-light ring-0 border-none'
 					: 'bg-card text-text'

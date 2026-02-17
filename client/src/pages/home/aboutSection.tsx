@@ -16,7 +16,7 @@ export default function AboutSection() {
 								Biz haqimizda
 							</span>
 						</div>
-						<h2 className='text-3xl md:text-4xl font-bold text-text mb-6'>
+						<h2 className='md:text-4xl text-2xl font-bold text-text mb-6'>
 							Ansor Market - Halol mahsulotlar uchun ishonchli manba
 						</h2>
 						<p className='text-text-secondary text-lg mb-6 leading-relaxed'>
@@ -57,18 +57,18 @@ export default function AboutSection() {
 							{isVideoPlaying ? (
 								<iframe
 									className='w-full h-80 lg:h-96'
-									src='https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1'
+									src='https://www.youtube.com/embed/fGj-SGNWmVI?autoplay=1&mute=1'
 									title='Ansor Market Video'
-									allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+									allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
 									allowFullScreen
-								></iframe>
+								/>
 							) : (
 								<div
 									className='cursor-pointer group'
 									onClick={() => setIsVideoPlaying(true)}
 								>
 									<img
-										src='https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=800'
+										src='https://www.thetakeout.com/img/gallery/whats-halal-meat-and-what-makes-it-different-from-other-meat/intro-1744427413.webp'
 										alt='Ansor Market Video'
 										className='w-full h-80 lg:h-96 object-cover'
 									/>

@@ -25,7 +25,7 @@ type Product = { _id: string; likeCount: number }
 
 export function useToggleLike() {
 	const qc = useQueryClient()
-	const { setLiked } = useFavorites()
+	const { requireAuth, ready, setLiked } = useFavorites()
 
 	return useMutation({
 		mutationFn: async ({ productId, prevLiked }: ToggleVars) => {
@@ -36,6 +36,9 @@ export function useToggleLike() {
 		},
 
 		onMutate: async ({ productId, prevLiked }) => {
+			if (!requireAuth() || !ready) {
+				throw new Error('Like uchun avval login qiling!')
+			}
 			const nextLiked = !prevLiked
 
 			// ✅ 1) UI darhol o'zgaradi

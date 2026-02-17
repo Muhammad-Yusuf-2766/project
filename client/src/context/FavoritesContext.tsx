@@ -15,6 +15,7 @@ type FavoritesCtx = {
 	setLiked: (id: string, liked: boolean) => void
 	hydrate: (ids: string[]) => void
 	ready: boolean
+	requireAuth: () => boolean // 👈 shu
 }
 
 const FavoritesContext = createContext<FavoritesCtx | null>(null)
@@ -60,8 +61,9 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 			setLiked,
 			hydrate,
 			ready,
+			requireAuth: () => !!user?._id, // 👈 shu
 		}
-	}, [likedIdsState, ready])
+	}, [likedIdsState, ready, user?._id])
 
 	return (
 		<FavoritesContext.Provider value={value}>

@@ -2,10 +2,10 @@ export default function CTASection() {
 	return (
 		<div className='bg-card text-text py-16'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
-				<h2 className='text-4xl font-bold mb-4'>
+				<h2 className='md:text-4xl text-2xl font-bold mb-4'>
 					Sotuvchi bo'lishni xohlaysizmi?
 				</h2>
-				<p className='text-xl text-text-muted mb-8 max-w-2xl mx-auto'>
+				<p className='md:text-xl text-lg text-text-muted mb-8 max-w-2xl mx-auto'>
 					Ishonchli sotuvchilar jamoamizga qo'shiling va minglab mijozlarga
 					sifatli halol mahsulotlaringizni yetkazing.
 				</p>

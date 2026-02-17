@@ -16,6 +16,7 @@ import {
 	X,
 } from 'lucide-react'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import {
 	ProductGridSkeleton,
@@ -24,6 +25,7 @@ import {
 import { useAuth } from '../../context/AuthContext'
 import { useFavorites } from '../../context/FavoritesContext'
 import { useToggleLike } from '../../hooks/useToggleLike'
+import { migrateUserCartToGuest } from '../../lib/cartstorage'
 import { formatDate, formatPrice } from '../../lib/helpers'
 import { resolveImageUrl } from '../../lib/mediaUrl'
 import { fetchUserFavorites, fetchUserOrders } from '../../service/userApi'
@@ -88,8 +90,11 @@ export default function Profile() {
 	}
 
 	const handleLogout = () => {
+		if (user) migrateUserCartToGuest(user?._id)
 		logout()
-		window.location.replace('/')
+		toast.success('Logout qilindingiz!')
+		// window.location.replace('/')
+		return
 	}
 
 	const { data: ordersData, isLoading } = useQuery({

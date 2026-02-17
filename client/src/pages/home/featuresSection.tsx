@@ -5,10 +5,10 @@ export default function FeaturesSection() {
 		<div className='py-16'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='text-center mb-12'>
-					<h2 className='text-4xl font-bold text-text mb-4'>
+					<h2 className='md:text-4xl text-2xl font-bold text-text mb-4'>
 						Nima uchun Ansor Market?
 					</h2>
-					<p className='text-xl text-text-secondary'>
+					<p className='md:text-xl text-lg text-text-secondary'>
 						Sifatli halol mahsulotlar uchun ishonchli hamkor
 					</p>
 				</div>

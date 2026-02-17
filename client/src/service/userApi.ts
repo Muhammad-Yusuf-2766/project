@@ -28,9 +28,14 @@ export async function registerApi(payload: {
 	return res.data
 }
 
-export async function checkMe() {
+type CheckMeResponse = {
+	user: AuthUser
+	state: string
+}
+
+export async function checkMe(): Promise<CheckMeResponse> {
 	const res = await api.get('/api/auth/check-me')
-	return res
+	return res.data
 }
 
 type GetUserOrders = {
@@ -44,6 +49,7 @@ export async function fetchUserOrders(): Promise<GetUserOrders> {
 type GetUserFavorites = {
 	products: Product[]
 }
+
 export async function fetchUserFavorites(): Promise<GetUserFavorites> {
 	const res = await api.get('/api/user/favorites')
 	return res.data

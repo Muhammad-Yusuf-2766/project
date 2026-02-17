@@ -19,7 +19,7 @@ export default function RecentProductsSection({ products }: Props) {
 							Yangi kelganlar
 						</span>
 					</div>
-					<h2 className='text-3xl md:text-4xl font-bold text-text'>
+					<h2 className='md:text-4xl text-2xl font-bold text-text'>
 						So'nggi Mahsulotlar
 					</h2>
 				</div>

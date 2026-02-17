@@ -8,7 +8,7 @@ import {
 	Shield,
 	Wheat,
 } from 'lucide-react'
-import { CategoryType, Order, Product } from '../types'
+import { CategoryType, Order } from '../types'
 
 // ====== Home-page ===========//
 export const Categories = [
@@ -60,19 +60,21 @@ export const Categories = [
 export const features = [
 	{
 		icon: Shield,
-		title: '100% Halal Certified',
+		title: '100% Halol Sertifikatlangan',
 		description:
-			'All products are certified halal and meet the highest standards',
+			'Barcha mahsulotlar halol sertifikatiga ega va eng yuqori talablarga mos.',
 	},
 	{
 		icon: Clock,
-		title: 'Fresh Daily',
-		description: 'Products delivered fresh every day from trusted sellers',
+		title: 'Har kuni yangi',
+		description:
+			'Ishonchli sotuvchilardan mahsulotlar har kuni yangi holatda yetkaziladi.',
 	},
 	{
 		icon: Award,
-		title: 'Quality Guaranteed',
-		description: 'We ensure the highest quality standards for all products',
+		title: 'Sifat kafolatlangan',
+		description:
+			'Biz barcha mahsulotlarda yuqori sifat standartlarini ta’minlaymiz.',
 	},
 ]
 
@@ -240,34 +242,34 @@ export const recentProducts = [
 // ====== Home-page ===========//
 
 // ===== 	Admin-pages ====== //
-export const mockProducts: Product[] = [
-	{
-		_id: '1',
-		title: 'Premium Angus Beef',
-		category: 'beef',
-		price: 15000,
-		unit: 'kg',
-		description: 'High-quality halal Angus beef',
-		image:
-			'https://images.pexels.com/photos/65175/pexels-photo-65175.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 50,
-		sellerId: '1',
-		createdAt: '2024-01-01',
-	},
-	{
-		productId: '2',
-		title: 'Fresh Lamb Chops',
-		category: 'mutton',
-		price: 16500,
-		unit: 'kg',
-		description: 'Tender halal lamb chops',
-		image:
-			'https://images.pexels.com/photos/361184/asparagus-steak-veal-steak-veal-361184.jpeg?auto=compress&cs=tinysrgb&w=400',
-		stock: 30,
-		sellerId: '2',
-		createdAt: '2024-01-02',
-	},
-]
+// export const mockProducts: Product[] = [
+// 	{
+// 		_id: '1',
+// 		title: 'Premium Angus Beef',
+// 		category: 'beef',
+// 		price: 15000,
+// 		unit: 'kg',
+// 		description: 'High-quality halal Angus beef',
+// 		image:
+// 			'https://images.pexels.com/photos/65175/pexels-photo-65175.jpeg?auto=compress&cs=tinysrgb&w=400',
+// 		stock: 50,
+// 		sellerId: '1',
+// 		createdAt: '2024-01-01',
+// 	},
+// 	{
+// 		productId: '2',
+// 		title: 'Fresh Lamb Chops',
+// 		category: 'mutton',
+// 		price: 16500,
+// 		unit: 'kg',
+// 		description: 'Tender halal lamb chops',
+// 		image:
+// 			'https://images.pexels.com/photos/361184/asparagus-steak-veal-steak-veal-361184.jpeg?auto=compress&cs=tinysrgb&w=400',
+// 		stock: 30,
+// 		sellerId: '2',
+// 		createdAt: '2024-01-02',
+// 	},
+// ]
 
 // export const stats = [
 // 	{

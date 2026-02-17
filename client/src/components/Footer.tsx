@@ -16,8 +16,9 @@ export default function Footer() {
 							</span>
 						</div>
 						<p className='text-text-muted mb-4 max-w-md'>
-							Your trusted source for premium halal products. We connect quality
-							sellers with customers who value authenticity and excellence.
+							Ansor Market — halollik va sifatni qadrlaydiganlar uchun. Halol
+							go‘sht, yangi yopilgan non va saralangan mahsulotlar har kuni siz
+							uchun.
 						</p>
 					</div>
 

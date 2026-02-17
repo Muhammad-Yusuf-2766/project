@@ -79,17 +79,6 @@ export default function Navbar() {
 								Admin Panel
 							</Link>
 						)}
-
-						{isLoggedIn && userRole === 'seller' && (
-							<Link
-								to='/dashboard'
-								className={`${
-									currentPath === '/dashboard' ? 'text-primary' : 'text-text'
-								} hover:text-primary transition-colors font-medium`}
-							>
-								Dashboard
-							</Link>
-						)}
 					</div>
 
 					<div className='hidden md:flex items-center space-x-6'>
@@ -143,79 +132,79 @@ export default function Navbar() {
 						</button>
 					</div>
 				</div>
+			</div>
 
-				{/* Mobile Menu */}
-				{mobileMenuOpen && (
-					<div className='md:hidden py-4 space-y-3'>
+			{/* Mobile Menu — absolute overlay, does not push page content down */}
+			<div
+				className='md:hidden absolute left-0 right-0 bg-card shadow-md overflow-hidden transition-all duration-300 ease-in-out rounded-b-2xl'
+				style={{
+					maxHeight: mobileMenuOpen ? '400px' : '0px',
+					opacity: mobileMenuOpen ? 1 : 0,
+				}}
+			>
+				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-3'>
+					<Link
+						to='/'
+						onClick={() => setMobileMenuOpen(false)}
+						className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
+					>
+						<Home className='w-5 h-5' />
+						Asosiy
+					</Link>
+					<Link
+						to='/products'
+						onClick={() => setMobileMenuOpen(false)}
+						className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
+					>
+						<Blocks className='w-5 h-5' />
+						Mahsulotlar
+					</Link>
+					<Link
+						to='/about'
+						onClick={() => setMobileMenuOpen(false)}
+						className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
+					>
+						<Info className='w-5 h-5' />
+						Biz haqimizda
+					</Link>
+					<Link
+						to='/contact'
+						onClick={() => setMobileMenuOpen(false)}
+						className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
+					>
+						<Phone className='w-5 h-5' />
+						Aloqa
+					</Link>
+					{isLoggedIn && userRole === 'admin' && (
 						<Link
-							to='/'
+							to='/admin'
 							onClick={() => setMobileMenuOpen(false)}
-							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
+							className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
 						>
-							<Home className='w-5 h-5' />
-							Asosiy
+							Admin Panel
 						</Link>
+					)}
+
+					{isLoggedIn ? (
 						<Link
-							to='/products'
+							to={'/profile'}
 							onClick={() => setMobileMenuOpen(false)}
-							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
+							className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
 						>
-							<Blocks className='w-5 h-5' />
-							Mahsulotlar
+							<User className='w-5 h-5' />
+							<span>Mening sahifam</span>
 						</Link>
+					) : (
 						<Link
-							to='/about'
+							to={'/login'}
 							onClick={() => setMobileMenuOpen(false)}
-							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
+							className='flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
 						>
-							<Info className='w-5 h-5' />
-							Biz haqimizda
+							<LogIn className='w-5 h-5' />
+							<span>Login</span>
 						</Link>
-						<Link
-							to='/contact'
-							onClick={() => setMobileMenuOpen(false)}
-							className='flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
-						>
-							<Phone className='w-5 h-5' />
-							Aloqa
-						</Link>
-						{isLoggedIn && userRole === 'admin' && (
-							<Link
-								to='/admin'
-								onClick={() => setMobileMenuOpen(false)}
-								className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
-							>
-								Admin Panel
-							</Link>
-						)}
-						{isLoggedIn && userRole === 'seller' && (
-							<Link
-								to='/dashboard'
-								onClick={() => setMobileMenuOpen(false)}
-								className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors'
-							>
-								Dashboard
-							</Link>
-						)}
-						{isLoggedIn ? (
-							<Link
-								to={'/profile'}
-								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
-							>
-								<User className='w-4 h-4' />
-								<span>Mening sahifam</span>
-							</Link>
-						) : (
-							<Link
-								to={'/login'}
-								className='flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors'
-							>
-								<LogIn className='w-4 h-4' />
-								<span>Login</span>
-							</Link>
-						)}
-					</div>
-				)}
+					)}
+				</div>
 			</div>
 		</nav>
 	)

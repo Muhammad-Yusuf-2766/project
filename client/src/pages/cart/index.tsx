@@ -257,7 +257,7 @@ export default function Cart() {
 								</button>
 
 								{/* Payment Methods */}
-								<div className='mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border'>
+								{/* <div className='mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border'>
 									<p className='text-text-muted text-xs sm:text-sm text-center mb-2 sm:mb-3'>
 										Qabul qilinadigan to{"'"}lov usullari
 									</p>
@@ -278,7 +278,7 @@ export default function Cart() {
 											</span>
 										</div>
 									</div>
-								</div>
+								</div> */}
 							</div>
 						</div>
 					</div>

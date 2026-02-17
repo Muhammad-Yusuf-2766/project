@@ -1,5 +1,6 @@
 import React, {
 	createContext,
+	useCallback,
 	useContext,
 	useEffect,
 	useMemo,
@@ -30,14 +31,9 @@ type AuthCtx = {
 
 const AuthContext = createContext<AuthCtx | null>(null)
 
-type FetchMeType = {
-	user: AuthUser
-	state: number
-}
-
-async function fetchMe(token: string) {
+async function fetchMe() {
 	// backend: GET /api/auth/me -> { user: {...} } yoki user o'zini qaytaradi
-	const res = await checkMe(token)
+	const res = await checkMe()
 	return res
 }
 
@@ -54,19 +50,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setStatus('unauthenticated')
 	}
 
-	const checkMe = async () => {
+	const checkMe = useCallback(async () => {
 		const t = readToken()
 		if (!t) {
 			setToken('')
 			setUser(null)
+			clearAuth()
 			setStatus('unauthenticated')
 			return
 		}
 
 		try {
 			setStatus('checking')
-			const data = await fetchMe(t)
-			const meUser = (data as FetchMeType).user ?? (data as FetchMeType)
+			const data = await fetchMe()
+			const meUser = data?.user
 
 			setToken(t)
 			setUser(meUser)
@@ -76,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		} catch {
 			logout()
 		}
-	}
+	}, [])
 
 	useEffect(() => {
 		;(async () => {
@@ -86,8 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				setBootstrapped(true) // ✅ nima bo‘lsa ham endi appni ochamiz
 			}
 		})()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [checkMe])
 
 	const isLoggedIn = status === 'authenticated'
 
@@ -107,7 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			logout,
 			checkMe,
 		}),
-		[user, token, status],
+		[user, token, isLoggedIn, status, checkMe],
 	)
 
 	// ✅ Birinchi startda 100% faqat loader

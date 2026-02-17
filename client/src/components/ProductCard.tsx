@@ -15,7 +15,6 @@ export default function ProductCard({ product }: ProductCardProps) {
 	const { add } = useCart()
 	const { mutate: toggleLike, isPending } = useToggleLike()
 	const { isLiked } = useFavorites()
-	const { ready } = useFavorites()
 
 	return (
 		<div className='bg-card rounded-lg sm:rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 snap-start group'>
@@ -82,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 						<button
 							className='flex items-center'
 							type='button'
-							disabled={!ready || isPending}
+							disabled={isPending}
 							onClick={e => {
 								e.preventDefault()
 								e.stopPropagation()

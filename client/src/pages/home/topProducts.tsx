@@ -41,7 +41,7 @@ export default function TopProductsSection({ products }: Props) {
 							Eng yaxshilari
 						</span>
 					</div>
-					<h2 className='text-3xl md:text-4xl font-bold text-text'>
+					<h2 className='md:text-4xl text-2xl font-bold text-text'>
 						Top Mahsulotlar
 					</h2>
 				</div>
