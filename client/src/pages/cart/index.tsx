@@ -19,6 +19,7 @@ import { useCart } from '../../context/CartContext'
 import { formatPrice } from '../../lib/helpers'
 import { resolveImageUrl } from '../../lib/mediaUrl'
 import { api } from '../../service/axiosinctance'
+import { Order } from '../../types'
 
 export default function Cart() {
 	const { items, remove, updateQty, clear } = useCart()
@@ -53,11 +54,16 @@ export default function Cart() {
 				customerPhone: user?.phone || '',
 			}
 
-			await api.post('/api/user/order', orderData)
+			type Createorder = {
+				order: Order
+			}
+			const res = await api.post<Createorder>('/api/user/order', orderData)
+			const order = res.data.order
+			if (!order) return
 
 			toast.success('Buyurtma muvaffaqiyatli yuborildi!')
 			clear()
-			navigate('/profile')
+			navigate(`/orders/${order._id}`)
 		} catch (error) {
 			toast.error('Buyurtma yuborishda xatolik yuz berdi')
 		} finally {

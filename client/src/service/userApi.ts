@@ -11,10 +11,7 @@ export type TGetProductsResponse = {
 	proudcts: Product[]
 }
 
-export async function loginApi(payload: {
-	phone: string
-	password: string
-}): Promise<AuthResponse> {
+export async function loginApi(payload: { phone: string; password: string }) {
 	const res = await api.post<AuthResponse>('/api/auth/login', payload)
 	return res.data
 }
@@ -57,3 +54,11 @@ export async function fetchUserFavorites(): Promise<GetUserFavorites> {
 
 export const getProducts = () =>
 	api.get<TGetProductsResponse>('/api/user/products')
+
+type GetOrder = {
+	order: Order
+}
+export async function fetchOrder(id: string): Promise<GetOrder> {
+	const res = await api.get(`/api/user/order/${id}`)
+	return res.data
+}

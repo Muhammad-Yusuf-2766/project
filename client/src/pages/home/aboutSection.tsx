@@ -1,6 +1,7 @@
 import { Play, ShoppingCart, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { CountUp } from '../../components/UI/CountUp'
 
 export default function AboutSection() {
 	const [isVideoPlaying, setIsVideoPlaying] = useState(false)
@@ -27,19 +28,19 @@ export default function AboutSection() {
 						<div className='grid grid-cols-3 gap-6 mb-8'>
 							<div className='text-center'>
 								<div className='text-3xl md:text-4xl font-bold text-primary mb-1'>
-									500+
+									<CountUp end={500} duration={3000} />
 								</div>
 								<div className='text-text-muted text-sm'>Mahsulotlar</div>
 							</div>
 							<div className='text-center'>
 								<div className='text-3xl md:text-4xl font-bold text-primary mb-1'>
-									10K+
+									<CountUp end={10} suffix={'K+'} duration={3000} />
 								</div>
 								<div className='text-text-muted text-sm'>Mijozlar</div>
 							</div>
 							<div className='text-center'>
 								<div className='text-3xl md:text-4xl font-bold text-primary mb-1'>
-									50+
+									<CountUp end={50} suffix={'+'} duration={3000} />
 								</div>
 								<div className='text-text-muted text-sm'>Sotuvchilar</div>
 							</div>

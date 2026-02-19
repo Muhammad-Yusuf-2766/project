@@ -3,12 +3,14 @@ import { Eye, EyeOff, LogIn, ShoppingBag } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import Error from '../../components/Error'
 import { useAuth } from '../../context/AuthContext'
 import { migrateGuestCartToUser } from '../../lib/cartstorage'
 import { loginApi } from '../../service/userApi'
 
 export default function Login() {
 	const [showPassword, setShowPassword] = useState(false)
+	const [error, setError] = useState<string | null>(null)
 	const { setAuthFromResponse } = useAuth()
 	const navigate = useNavigate()
 	const location = useLocation()
@@ -20,6 +22,7 @@ export default function Login() {
 	})
 
 	const handleSubmit = async (e: React.FormEvent) => {
+		setError(null)
 		e.preventDefault()
 		const payload = {
 			phone: formData.phone,
@@ -27,7 +30,7 @@ export default function Login() {
 		}
 		const res = await loginApi(payload)
 		if (res.failure) {
-			return toast.error(res.failure)
+			return setError(res.failure)
 		}
 		if (res.user) {
 			migrateGuestCartToUser(res.user._id)
@@ -69,6 +72,8 @@ export default function Login() {
 							kiring
 						</p>
 					</div>
+
+					{error && <Error error={error} />}
 
 					{/* Form */}
 					<form onSubmit={handleSubmit} className='space-y-5'>
@@ -159,11 +164,11 @@ export default function Login() {
 					</div>
 
 					{/* Social Login */}
-					<div className='space-y-3'>
+					{/* <div className='space-y-3'>
 						<button className='w-full flex items-center justify-center gap-3 px-6 py-3 bg-card border border-border rounded-lg font-medium text-text hover:bg-light transition-colors'>
 							Telegram bilan kirish
 						</button>
-					</div>
+					</div> */}
 
 					{/* Sign Up Link */}
 					<p className='text-center mt-8 text-text-muted'>

@@ -6,6 +6,7 @@ import {
 	Menu,
 	Phone,
 	ShoppingCart,
+	SlidersHorizontal,
 	User,
 	X,
 } from 'lucide-react'
@@ -179,8 +180,9 @@ export default function Navbar() {
 						<Link
 							to='/admin'
 							onClick={() => setMobileMenuOpen(false)}
-							className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
+							className='flex gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
 						>
+							<SlidersHorizontal />
 							Admin Panel
 						</Link>
 					)}
@@ -189,7 +191,7 @@ export default function Navbar() {
 						<Link
 							to={'/profile'}
 							onClick={() => setMobileMenuOpen(false)}
-							className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
+							className='flex gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors border-b border-gray-400'
 						>
 							<User className='w-5 h-5' />
 							<span>Mening sahifam</span>

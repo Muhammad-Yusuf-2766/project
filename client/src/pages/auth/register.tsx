@@ -2,12 +2,15 @@ import { Eye, EyeOff, ShoppingBag, UserPlus } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
+import Error from '../../components/Error'
 import { useAuth } from '../../context/AuthContext'
 import { registerApi } from '../../service/userApi'
 
 export default function Register() {
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+	const [error, setError] = useState<string | null>(null)
+
 	const navigate = useNavigate()
 
 	const [formData, setFormData] = useState({
@@ -22,7 +25,7 @@ export default function Register() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (formData.password !== formData.confirmPassword) {
-			alert('Parollar mos kelmaydi!')
+			setError('Parollar mos kelmaydi!')
 			return
 		}
 		// Handle signup logic here
@@ -34,6 +37,7 @@ export default function Register() {
 
 		const res = await registerApi(payload)
 		if (res.failure) {
+			setError(res.failure)
 			return toast.error(res.failure)
 		}
 		setAuthFromResponse(res)
@@ -107,6 +111,8 @@ export default function Register() {
 							kiring
 						</p>
 					</div>
+
+					{error && <Error error={error} />}
 
 					{/* Form */}
 					<form onSubmit={handleSubmit} className='space-y-4'>
@@ -260,9 +266,9 @@ export default function Register() {
 					</div>
 
 					{/* Social Signup */}
-					<button className='w-full flex items-center justify-center gap-3 px-6 py-3 bg-card border border-border rounded-lg font-medium text-text hover:bg-light transition-colors'>
+					{/* <button className='w-full flex items-center justify-center gap-3 px-6 py-3 bg-card border border-border rounded-lg font-medium text-text hover:bg-light transition-colors'>
 						Telegram bilan ro'yxatdan o'tish
-					</button>
+					</button> */}
 
 					{/* Login Link */}
 					<p className='text-center mt-6 text-text-muted'>

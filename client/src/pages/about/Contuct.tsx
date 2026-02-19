@@ -1,5 +1,7 @@
 import { Clock, Mail, MapPin, MessageSquare, Phone, Send } from 'lucide-react'
 import { useState } from 'react'
+import { Reveal } from '../../components/UI/Reveal'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 
 interface FormData {
 	name: string
@@ -88,6 +90,8 @@ export default function Contact() {
 		setTimeout(() => setSubmitSuccess(false), 5000)
 	}
 
+	useScrollReveal()
+
 	return (
 		<div className='min-h-screen'>
 			{/* Hero Section */}
@@ -100,13 +104,21 @@ export default function Contact() {
 					backgroundPosition: 'center',
 				}}
 			>
-				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
-					<h1 className='text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6'>
+				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+					<Reveal
+						as='h1'
+						delay='100ms'
+						className='text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6'
+					>
 						Biz bilan bog'laning
-					</h1>
-					<p className='text-lg sm:text-xl text-white/90 max-w-2xl mx-auto'>
+					</Reveal>
+					<Reveal
+						as='p'
+						delay='400ms'
+						className='text-lg sm:text-xl text-white/90 max-w-2xl'
+					>
 						Savollaringiz bormi? Biz sizga yordam berishdan xursand bo'lamiz
-					</p>
+					</Reveal>
 				</div>
 			</div>
 
@@ -117,7 +129,8 @@ export default function Contact() {
 						{contactInfo.map((info, index) => {
 							const Icon = info.icon
 							return (
-								<div
+								<Reveal
+									delay={`${(index + 1) * 200}ms`}
 									key={index}
 									className='bg-light p-4 sm:p-6 rounded-xl text-center hover:shadow-md transition-shadow'
 								>
@@ -133,7 +146,7 @@ export default function Contact() {
 									<p className='text-text-muted text-xs sm:text-sm'>
 										{info.subtext}
 									</p>
-								</div>
+								</Reveal>
 							)
 						})}
 					</div>

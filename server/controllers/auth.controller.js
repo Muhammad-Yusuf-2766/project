@@ -14,13 +14,20 @@ class AuthController {
 	async login(req, res, next) {
 		try {
 			const { phone, password } = req.body
+			const filteredPhone = phone.replace(/\s+/g, '')
 
-			const user = await userModel.findOne({ phone })
-			if (!user) return res.status(404).json({ failure: 'User not found' })
+			const user = await userModel.findOne({ phone: filteredPhone })
+			if (!user)
+				return res.json({
+					failure:
+						'Bu raqam bilan foydalanuvchi topilmadi, iltimos boshqa raqam kiriting yoki ro`yhatdan o`ting!',
+				})
 
 			const isValidPassword = await bcrypt.compare(password, user.password)
 			if (!isValidPassword)
-				return res.status(401).json({ failure: 'Password is incorrect' })
+				return res.json({
+					failure: "Parol noto'g'ri. Iltimos to'gri parolni kiriting.",
+				})
 
 			if (user.isDeleted)
 				return res.status(403).json({
@@ -41,12 +48,17 @@ class AuthController {
 
 	async register(req, res, next) {
 		try {
-			console.log('register')
 			const { fullName, phone, password } = req.body
+			if (!fullName || !phone || !password) {
+				return res.json({
+					failure: "Iltimos barcha ma'lumotlarni kiriting",
+				})
+			}
+			const filteredPhone = phone.replace(/\s+/g, '')
 
-			const user = await userModel.findOne({ phone })
+			const user = await userModel.findOne({ phone: filteredPhone })
 			if (user)
-				return res.status(409).json({
+				return res.json({
 					failure:
 						'Bu raqam bilan ro`yxatdan o`tilgan. Iltimos boshqa raqam kiriting',
 				})
@@ -54,7 +66,7 @@ class AuthController {
 			const hashedPassword = await bcrypt.hash(password, 10)
 
 			const newUser = await userModel.create({
-				phone,
+				phone: filteredPhone,
 				password: hashedPassword,
 				fullName,
 			})
@@ -90,8 +102,6 @@ class AuthController {
 
 			return res.json({ state: 'success', user })
 		} catch (error) {
-			console.log(error)
-
 			// token expired bo'lsa 401 qaytargan yaxshiroq
 			if (
 				error?.name === 'TokenExpiredError' ||

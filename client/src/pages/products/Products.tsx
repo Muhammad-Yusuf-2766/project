@@ -5,9 +5,11 @@ import { ProductGridSkeleton } from '../../components/Loader/Loading'
 import { Pagination2 } from '../../components/Pagination'
 import ProductCard from '../../components/ProductCard'
 import ShopPageHeader from '../../components/ShopHeader'
+import { Reveal } from '../../components/UI/Reveal'
 import UndefinedData from '../../components/UndefinedData'
 import { categoriesPage } from '../../constants'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { fetchProducts, SortProducts } from '../../service/apiProducts'
 
 export type SaleFilter = 'all' | 'sale' | 'new' | 'top' | 'newst' | 'oldest'
@@ -47,8 +49,11 @@ export default function Products() {
 	const totalProducts = data?.meta?.total ?? 0
 	const totalPages = Math.ceil(totalProducts / pageSize)
 
+	// Fade-in-up animation hook
+	useScrollReveal()
+
 	return (
-		<div className='min-h-screen overflow-x-hidden'>
+		<div className='min-h-screen overflow-hidden'>
 			<div
 				className='relative text-white py-16 sm:py-24'
 				style={{
@@ -59,16 +64,23 @@ export default function Products() {
 				}}
 			>
 				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-					<h1 className='md:text-4xl text-2xl font-bold mb-4'>
+					<Reveal
+						as='h1'
+						delay='0ms'
+						className='md:text-4xl text-2xl font-bold mb-4'
+					>
 						Bizning Mahsulotlar
-					</h1>
-					<p className='md:text-lg text-base'>
+					</Reveal>
+					<Reveal as='p' delay='100ms' className='md:text-lg text-base'>
 						Eng sara halol mahsulotlar — bir joyda
-					</p>
+					</Reveal>
 				</div>
 			</div>
-
-			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:text-lg text-base'>
+			<Reveal
+				as='div'
+				delay='200ms'
+				className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:text-lg text-base'
+			>
 				<div className='mb-8'>
 					{/* Filter Section */}
 					<ShopPageHeader
@@ -139,7 +151,7 @@ export default function Products() {
 						)}
 					</div>
 				</div>
-			</div>
+			</Reveal>
 		</div>
 	)
 }

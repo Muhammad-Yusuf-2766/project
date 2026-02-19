@@ -142,64 +142,75 @@ class UserController {
 			next(error)
 		}
 	}
-	// [GET] /user/orders
-	async getOrders(req, res, next) {
+
+	// [GET] /user/order/:id
+	async getUserOrderById(req, res, next) {
 		try {
-			const currentUser = req.user
-			// 1: Req queries
-			const { searchQuery, filter, page, pageSize } = req.query
-			const skipAmount = (+page - 1) * +pageSize
-			const matchQuery = { user: currentUser._id }
-
-			// 2: Query implementations
-			if (searchQuery) {
-				const escapedSearchQuery = searchQuery.replace(
-					/[.*+?^${}()|[\]\\]/g,
-					'\\$&',
-				)
-				matchQuery.$or = [
-					{ 'product.title': { $regex: new RegExp(escapedSearchQuery, 'i') } },
-				]
-			}
-
-			// 3: Sort options
-			let sortOptions = { createdAt: -1 }
-			if (filter === 'newest') sortOptions = { createdAt: -1 }
-			else if (filter === 'oldest') sortOptions = { createdAt: 1 }
-			const orders = await orderModel.aggregate([
-				{
-					$lookup: {
-						from: 'products',
-						localField: 'product',
-						foreignField: '_id',
-						as: 'product',
-					},
-				},
-				{ $unwind: '$product' },
-				{ $match: matchQuery },
-
-				{ $sort: sortOptions },
-				{ $skip: skipAmount },
-				{ $limit: +pageSize },
-				{
-					$project: {
-						'product.title': 1,
-						createdAt: 1,
-						updatedAt: 1,
-						price: 1,
-						status: 1,
-					},
-				},
-			])
-
-			const totalOrders = await orderModel.countDocuments(matchQuery)
-			const isNext = totalOrders > skipAmount + orders.length
-
-			return res.json({ orders, isNext })
+			const { id } = req.params
+			const order = await OrderModel.findById(id)
+			return res.json({ order })
 		} catch (error) {
 			next(error)
 		}
 	}
+	// [GET] /user/orders
+	// async getOrders(req, res, next) {
+	// 	try {
+	// 		const currentUser = req.user
+	// 		// 1: Req queries
+	// 		const { searchQuery, filter, page, pageSize } = req.query
+	// 		const skipAmount = (+page - 1) * +pageSize
+	// 		const matchQuery = { user: currentUser._id }
+
+	// 		// 2: Query implementations
+	// 		if (searchQuery) {
+	// 			const escapedSearchQuery = searchQuery.replace(
+	// 				/[.*+?^${}()|[\]\\]/g,
+	// 				'\\$&',
+	// 			)
+	// 			matchQuery.$or = [
+	// 				{ 'product.title': { $regex: new RegExp(escapedSearchQuery, 'i') } },
+	// 			]
+	// 		}
+
+	// 		// 3: Sort options
+	// 		let sortOptions = { createdAt: -1 }
+	// 		if (filter === 'newest') sortOptions = { createdAt: -1 }
+	// 		else if (filter === 'oldest') sortOptions = { createdAt: 1 }
+	// 		const orders = await orderModel.aggregate([
+	// 			{
+	// 				$lookup: {
+	// 					from: 'products',
+	// 					localField: 'product',
+	// 					foreignField: '_id',
+	// 					as: 'product',
+	// 				},
+	// 			},
+	// 			{ $unwind: '$product' },
+	// 			{ $match: matchQuery },
+
+	// 			{ $sort: sortOptions },
+	// 			{ $skip: skipAmount },
+	// 			{ $limit: +pageSize },
+	// 			{
+	// 				$project: {
+	// 					'product.title': 1,
+	// 					createdAt: 1,
+	// 					updatedAt: 1,
+	// 					price: 1,
+	// 					status: 1,
+	// 				},
+	// 			},
+	// 		])
+
+	// 		const totalOrders = await orderModel.countDocuments(matchQuery)
+	// 		const isNext = totalOrders > skipAmount + orders.length
+
+	// 		return res.json({ orders, isNext })
+	// 	} catch (error) {
+	// 		next(error)
+	// 	}
+	// }
 	// [GET] /user/transactions
 	async getTransactions(req, res, next) {
 		try {
@@ -443,7 +454,7 @@ class UserController {
 			} catch (e) {
 				console.log('Telegram send error:', e)
 			}
-			return res.json({ status: 200, order: newOrder })
+			return res.json({ order: newOrder })
 		} catch (error) {
 			console.log(error)
 			next(error)

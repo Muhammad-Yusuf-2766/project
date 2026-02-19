@@ -12,7 +12,7 @@ interface DropdownProps {
 	onChange: (value: string) => void
 }
 
-function Dropdown({ options, selected, onChange }: DropdownProps) {
+export function Dropdown({ options, selected, onChange }: DropdownProps) {
 	const [open, setOpen] = useState(false)
 	const selectedLabel =
 		options.find(o => o.value === selected)?.label ?? selected

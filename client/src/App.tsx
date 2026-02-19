@@ -9,6 +9,7 @@ import RequireAuth from './routes/requireAuth'
 import RequireRole from './routes/requireRole'
 
 import { PageLoading } from './components/Loader/Loading' // sizning loader component
+import OrderDetailPage from './pages/auth/orderDetail'
 
 // ✅ Lazy pages
 const Home = lazy(() => import('./pages/home'))
@@ -62,6 +63,7 @@ function App() {
 							{/* Login kerak bo‘ladigan sahifalar */}
 							<Route element={<RequireAuth />}>
 								<Route path='/profile' element={<Profile />} />
+								<Route path='/orders/:id' element={<OrderDetailPage />} />
 							</Route>
 
 							{/* Admin only */}

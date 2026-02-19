@@ -9,6 +9,9 @@ import {
 	Users,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { CountUp } from '../../components/UI/CountUp'
+import { Reveal } from '../../components/UI/Reveal'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 
 const stats = [
 	{ label: 'Mahsulotlar', value: '500+' },
@@ -16,6 +19,16 @@ const stats = [
 	{ label: 'Sotuvchilar', value: '50+' },
 	{ label: 'Yillik tajriba', value: '5+' },
 ]
+
+// Helper to parse stat values
+const parseStatValue = (value: string): { number: number; suffix: string } => {
+	const match = value.match(/^(\d+)(.*)$/)
+	if (!match) return { number: 0, suffix: value }
+	return {
+		number: parseInt(match[1], 10),
+		suffix: match[2], // e.g., '+', ',000+', etc.
+	}
+}
 
 const values = [
 	{
@@ -66,6 +79,7 @@ const team = [
 ]
 
 export default function About() {
+	useScrollReveal()
 	return (
 		<div className='min-h-screen'>
 			{/* Hero Section */}
@@ -78,14 +92,22 @@ export default function About() {
 					backgroundPosition: 'center',
 				}}
 			>
-				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
-					<h1 className='text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6'>
+				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+					<Reveal
+						as='h1'
+						delay='100ms'
+						className='text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6'
+					>
 						Biz haqimizda
-					</h1>
-					<p className='text-lg sm:text-xl text-white/90 max-w-2xl mx-auto'>
+					</Reveal>
+					<Reveal
+						as='p'
+						delay='400ms'
+						className='text-lg sm:text-xl text-white/90 max-w-2xl'
+					>
 						Ansor Market - O'zbekistonda ishonchli halol mahsulotlar yetkazib
 						beruvchi platform
-					</p>
+					</Reveal>
 				</div>
 			</div>
 
@@ -93,16 +115,21 @@ export default function About() {
 			<div className='bg-card py-8 sm:py-12 border-b border-border'>
 				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 					<div className='grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8'>
-						{stats.map((stat, index) => (
-							<div key={index} className='text-center'>
-								<div className='text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1'>
-									{stat.value}
-								</div>
-								<div className='text-text-muted text-sm sm:text-base'>
-									{stat.label}
-								</div>
-							</div>
-						))}
+						{stats.map((stat, index) => {
+							const { number, suffix } = parseStatValue(stat.value)
+							return (
+								<Reveal key={index} delay={`${index * 100}ms`}>
+									<div className='text-center'>
+										<div className='text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1'>
+											<CountUp end={number} suffix={suffix} duration={3000} />
+										</div>
+										<div className='text-text-muted text-sm sm:text-base'>
+											{stat.label}
+										</div>
+									</div>
+								</Reveal>
+							)
+						})}
 					</div>
 				</div>
 			</div>
@@ -252,7 +279,7 @@ export default function About() {
 
 					{/* Map Container */}
 					<div className='bg-card rounded-2xl shadow-lg overflow-hidden'>
-						<div className='aspect-video sm:aspect-[21/9]'>
+						<div className='aspect-video sm:aspect-21/9'>
 							<iframe
 								src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.0234567890123!2d69.2401!3d41.3111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDE4JzQwLjAiTiA2OcKwMTQnMjQuNCJF!5e0!3m2!1sen!2s!4v1234567890'
 								width='100%'

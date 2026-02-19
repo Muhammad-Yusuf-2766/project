@@ -9,6 +9,7 @@ router.get('/categories', userController.getCategories)
 router.get('/home', userController.getHomeData)
 
 router.get('/orders', userMiddleware, userController.getUserOrders)
+router.get('/order/:id', userMiddleware, userController.getUserOrderById)
 // router.get('/orders', userMiddleware, userController.getOrders)
 router.get('/transactions', userMiddleware, userController.getTransactions)
 router.get('/favorites', userMiddleware, userController.getFavourites)

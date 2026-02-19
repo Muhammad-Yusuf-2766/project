@@ -7,7 +7,7 @@ import { Product } from '../../types'
 import AddProductForm from './_components/AddProductForm'
 import AdminHeader from './_components/AdminHeader'
 import AdminTabs, { AdminTabType } from './_components/AdminTabs'
-import DeleteProductModal from './_components/DeleteProductModel'
+import ConfirmModal from './_components/DeleteProductModel'
 import EditProductModal from './_components/EditProductModel'
 import OrdersTable from './_components/ordersTable'
 import OverviewSection from './_components/OverviewSection'
@@ -83,7 +83,10 @@ export default function AdminDashboard() {
 			</div>
 
 			{/* Modals */}
-			<DeleteProductModal
+			<ConfirmModal
+				header="Mahsulotni o'chirish"
+				descr="Bu mahsulotni o'chirishga rozimisiz ?"
+				confirmButton="O'chirish"
 				isOpen={showDeleteModal}
 				onClose={() => setShowDeleteModal(false)}
 				onConfirm={confirmDelete}
